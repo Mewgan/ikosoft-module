@@ -1,0 +1,15 @@
+{
+  "name": "ikosoft-module",
+  "title": "Ikosoft",
+  "username": "Mewgan",
+  "remote": "https://github.com/Mewgan/post-module",
+  "download-url": "https://github.com/Mewgan/ikosoft-module/archive/master.zip",
+  "description": "Module for ikosoft",
+  "author": "S.Sumugan",
+  "version": "0.1",
+
+  "models": [
+    "Jet\\Modules\\Ikosoft\\Models\\IkosoftImport"
+  ]
+
+}
