@@ -16,18 +16,18 @@ class LoadSchedule extends LoadCustomField
     ];
     
     /**
-     * @param $service
+     * @param $entry
      * @return array|bool
      */
-    public function load($service)
+    public function load($entry)
     {
 
         $schedules = [];
 
-        foreach ($service->s as $schedule) {
+        foreach ($entry->s as $schedule) {
             $data = [];
-            foreach ($schedule->e as $entry) {
-                $data[(string)$entry['n']] = (string)$entry['v'];
+            foreach ($schedule->e as $e) {
+                $data[(string)$e['n']] = (string)$e['v'];
             }
             $schedules[(int)$schedule['n']] = $data;
         }

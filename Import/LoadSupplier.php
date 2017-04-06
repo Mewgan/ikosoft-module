@@ -12,20 +12,21 @@ class LoadSupplier extends LoadFixture
 {
 
     /**
-     * @param $service
+     * @param $entry
      * @return array|bool
      */
-    public function load($service)
+    public function load($entry)
     {
 
         $suppliers = [];
 
-        foreach ($service->s as $supplier) {
-            foreach ($supplier->e as $entry) {
-                if ((string)$entry['n'] == 'Caption')
-                    $suppliers[] = (string)$entry['v'];
+        foreach ($entry->s as $supplier) {
+            foreach ($supplier->e as $e) {
+                if ((string)$e['n'] == 'Caption')
+                    $suppliers[] = (string)$e['v'];
             }
         }
+
         return (!empty($suppliers))
             ? $this->loadSupplierData($suppliers)
             : true;

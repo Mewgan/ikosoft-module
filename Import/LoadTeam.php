@@ -9,19 +9,19 @@ namespace Jet\Modules\Ikosoft\Import;
 class LoadTeam extends LoadFixture
 {
     /**
-     * @param $service
+     * @param $entry
      * @return array|bool
      */
-    public function load($service)
+    public function load($entry)
     {
 
         $team = $duplicate = [];
         $i = 0;
-        foreach ($service->s as $supplier) {
+        foreach ($entry->s as $supplier) {
             $data = [];
-            foreach ($supplier->e as $entry) {
-                if ((string)$entry['n'] == 'DisplayName') $duplicate[(string)$entry['v']] = $i;
-                $data[(string)$entry['n']] = (string)$entry['v'];
+            foreach ($supplier->e as $e) {
+                if ((string)$e['n'] == 'DisplayName') $duplicate[(string)$e['v']] = $i;
+                $data[(string)$e['n']] = (string)$e['v'];
             }
             $team[$i] = $data;
             ++$i;

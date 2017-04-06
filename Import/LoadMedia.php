@@ -23,7 +23,7 @@ class LoadMedia extends LoadFixture
     }
 
     /**
-     * @return array|bool
+     * @return bool
      */
     public function load()
     {
@@ -36,7 +36,7 @@ class LoadMedia extends LoadFixture
         if(!empty($medias)) {
             $media_in_db = $this->getMediaFromDb();
             $medias = $this->removeUnusedMedia($media_in_db, $medias);
-            return $this->createMedia($medias);
+            $this->createMedia($medias);
         }
         return true;
     }
@@ -68,6 +68,11 @@ class LoadMedia extends LoadFixture
 
     }
 
+    /**
+     * @param array $medias
+     * @return bool
+     * @throws \Exception
+     */
     private function createMedia($medias = [])
     {
         $pictures = [];
@@ -100,10 +105,9 @@ class LoadMedia extends LoadFixture
                     $ext = explode('.', $new_path);
                     $ext = end($ext);
                     if (copy($this->import->data['instance_path'] . $media . '.' . $ext, ROOT . $new_path) === false)
-                        return ['status' => 'error', 'message' => 'Erreur lors de la copie du fichier : ' . $this->import->data['instance_path'] . $media . '.' . $ext . ' vers : ' .ROOT . $new_path];
+                        throw new \Exception('Erreur lors de la copie du fichier : ' . $this->import->data['instance_path'] . $media . '.' . $ext . ' vers : ' .ROOT . $new_path);
                 }
             }
         }
-        return true;
     }
 }

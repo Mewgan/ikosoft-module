@@ -88,6 +88,10 @@ class ImportController extends Controller
                 'call' => 'Jet\Modules\Ikosoft\Import\LoadSchedule@load',
                 'depend' => 'SalonInformation'
             ],
+            'WithAppointment' => [
+                'call' => 'Jet\Modules\Ikosoft\Import\LoadBookingLink@load',
+                'depend' => 'SalonInformation'
+            ],
             'Suppliers' => [
                 'call' => 'Jet\Modules\Ikosoft\Import\LoadSupplier@load',
                 'depend' => 'SalonInformation'
@@ -146,18 +150,12 @@ class ImportController extends Controller
                             $this->entries = new \SimpleXMLElement(file_get_contents($xml));
                             $this->pdo->beginTransaction();
 
+                            $this->data = ['instance' => $instance['filename'], 'instance_path' => $dir . $instance['filename'] . '/'];
+
                             $this->params['action'] = ($this->instanceInDb($instance['filename'])) ? 'update' : 'create';
                             if (!$this->params['automatic_update']) return false;
 
-                            $this->data = ['instance' => $instance['filename'], 'instance_path' => $dir . $instance['filename'] . '/'];
-
-                            foreach ($this->entries->s as $service) {
-                                $response = $this->callCallback($service, $this->entries);
-                                if (is_array($response)) {
-                                    $this->pdo->rollBack();
-                                    return $response;
-                                }
-                            }
+                            $this->recursiveCall($this->entries);
 
                             if (isset($this->data['website_id'])) {
                                 $this->createOrUpdateImport($this->data['website_id'], $instance['filename']);
@@ -183,29 +181,39 @@ class ImportController extends Controller
     }
 
     /**
-     * @param $service
      * @param $entries
-     * @return bool|mixed
      */
-    public function callCallback($service, $entries = null)
+    public function recursiveCall($entries)
     {
-        $key = (string)$service['n'];
+        foreach ($entries->s as $service) {
+            $this->callCallback($service, $entries);
+            if ($service->s) $this->recursiveCall($service);
+        }
+    }
+
+    /**
+     * @param $entry
+     * @param $entries
+     * @throws \Exception
+     */
+    public function callCallback($entry, $entries = null)
+    {
+        $key = (string)$entry['n'];
         $entries = is_null($entries) ? $this->entries : $entries;
         if (isset($this->callback[$key]['call'])) {
+
+            if (isset($this->params['instance_data']) && isset($this->params['instance_data'][$key]) && (string)$this->params['instance_data'][$key] == '0') return;
+
             if (isset($this->callback[$key]['depend']) && !empty($this->callback[$key]['depend'])) {
-                $entry = $this->findEntry($entries, $this->callback[$key]['depend']);
-                if (!is_null($entry)) {
-                    $response = $this->callCallback($entry, $entries);
-                    if (is_array($response)) return $response;
-                }
+                $e = $this->findEntry($entries, $this->callback[$key]['depend']);
+                if (!is_null($e)) $this->callCallback($e, $entries);
             }
             $callback = explode('@', $this->callback[$key]['call']);
             unset($this->callback[$key]);
-            return (isset($callback[1]))
-                ? $this->callMethod($callback[0], $callback[1], ['service' => $service], ['import' => $this])
-                : ['status' => 'error', 'message' => 'Impossible de trouver le callback : ' . $this->callback[$key]];
+            if (!isset($callback[1]))
+                throw new \Exception('Impossible de trouver le callback : ' . $this->callback[$key]);
+            $this->callMethod($callback[0], $callback[1], ['entry' => $entry], ['import' => $this]);
         }
-        return true;
     }
 
     /**
@@ -231,8 +239,12 @@ class ImportController extends Controller
         $req = $this->pdo->prepare('SELECT * FROM ' . $this->db['prefix'] . 'ikosoft_imports i WHERE i.uid = :uid');
         $req->execute(['uid' => $uid]);
         $import = $req->fetch();
-        if ($import !== false)
+        if ($import !== false) {
             $this->params['automatic_update'] = (isset($import['to_update']) && ($import['to_update'] == true || $import['to_update'] == 1));
+            $this->params['instance_data'] = json_decode($import['data'], true);
+            $this->data['website_id'] = $import['website_id'];
+            $this->getWebsites($this->data['website_id']);
+        }
         return ($import !== false);
     }
 
@@ -243,7 +255,23 @@ class ImportController extends Controller
     private function createOrUpdateImport($website_id, $uid)
     {
         $date = new \DateTime();
-        $values = ['uid' => $uid, 'website_id' => $website_id, 'to_update' => 1, 'created_at' => $date->format("Y-m-d H:i:s"), 'updated_at' => $date->format("Y-m-d H:i:s")];
+        $values = [
+            'uid' => $uid,
+            'website_id' => $website_id,
+            'to_update' => 1,
+            'created_at' => $date->format("Y-m-d H:i:s"),
+            'updated_at' => $date->format("Y-m-d H:i:s"),
+            'data' => json_encode([
+                'SalonInformation' => 1,
+                'TimeTable' => 1,
+                'WithAppointment' => 1,
+                'Suppliers' => 1,
+                'Pictures' => 1,
+                'Employees' => 1,
+                'ServicesFamilies' => 1,
+                'Services' => 1
+            ])
+        ];
         $keys = array_keys($values);
         if ($this->params['action'] == 'create') {
             $req = $this->pdo->prepare('INSERT INTO ' . $this->db['prefix'] . 'ikosoft_imports (' . implode(',', $keys) . ') VALUES (:' . implode(',:', $keys) . ')');
@@ -263,6 +291,24 @@ class ImportController extends Controller
         $data = is_array($data) ? json_encode($data) : $data;
         $req = $this->pdo->prepare('UPDATE ' . $this->db['prefix'] . 'websites SET `data` = :data WHERE id = :id');
         $req->execute(['data' => $data, 'id' => $website_id]);
+    }
+
+    /**
+     * @param $website_id
+     */
+    public function getWebsites($website_id)
+    {
+        $this->data['websites'][] = $website_id;
+        $req = $this->pdo->prepare('SELECT t.website_id 
+          FROM ' . $this->db['prefix'] . 'websites w
+          LEFT JOIN ' . $this->db['prefix'] . 'themes t ON t.id = w.theme_id
+          WHERE w.id = :website_id'
+        );
+        $req->execute(['website_id' => $website_id]);
+        $res = $req->fetch();
+        if ($res !== false && $website_id != $res['website_id']) {
+            $this->getWebsites($res['website_id']);
+        }
     }
 
     /**

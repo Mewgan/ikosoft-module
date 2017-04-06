@@ -10,19 +10,19 @@ class LoadService extends LoadFixture
 {
 
     /**
-     * @param $service
+     * @param $entry
      * @return array|bool
      */
-    public function load($service)
+    public function load($entry)
     {
 
         $services = $duplicate = [];
         $i = 0;
-        foreach ($service->s as $key => $price) {
+        foreach ($entry->s as $key => $price) {
             $data = [];
-            foreach ($price->e as $entry) {
-                if ((string)$entry['n'] == 'Caption') $duplicate[(string)$entry['v']] = $i;
-                $data[(string)$entry['n']] = (string)$entry['v'];
+            foreach ($price->e as $e) {
+                if ((string)$e['n'] == 'Caption') $duplicate[(string)$e['v']] = $i;
+                $data[(string)$e['n']] = (string)$e['v'];
             }
             $services[$i] = $data;
             ++$i;

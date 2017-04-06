@@ -12,21 +12,20 @@ class LoadWebsite extends LoadFixture
 {
 
     /**
-     * @param $service
+     * @param $entry
      * @return array|bool
      */
-    public function load($service)
+    public function load($entry)
     {
-
         $account = $address = $society = $entries = [];
 
-        foreach ($service->e as $entry) {
-            $this->getAccountData($entry, $account);
-            $this->getAddressData($entry, $address);
-            $this->getSocietyData($entry, $society);
-            $entries[(string)$entry['n']] = (string)$entry['v'];
+        foreach ($entry->e as $e) {
+            $this->getAccountData($e, $account);
+            $this->getAddressData($e, $address);
+            $this->getSocietyData($e, $society);
+            $entries[(string)$e['n']] = (string)$e['v'];
         }
-        
+
         $data = ($this->import->params['action'] == 'update') ? $this->getInstanceData($entries['Guid']) : [];
         if (!empty($data) && $data === false) return ['status' => 'error', 'message' => $entries['Guid'] . ' => Impossible de  récupérer les données'];
         if (!empty($data)) {
@@ -35,36 +34,26 @@ class LoadWebsite extends LoadFixture
             $address['id'] = $data['ad_id'];
         }
 
-        /*     $response = $this->isDuplicate($entries, $account, $society);
-             if (is_array($response)) return $response;*/
-
-        $response = $this->loadAccountData($account);
-        if (is_array($response)) return $response;
-
-        $response = $this->loadSocietyData($society);
-        if (is_array($response)) return $response;
-
-        $this->loadAddressData($address);
+        /*$response = $this->isDuplicate($entries, $account, $society);
+        if (is_array($response)) return $response;*/
 
         $slug = new Slugify();
         $data['domain'] = $slug->slugify($society['name']);
 
-        $response = $this->loadWebsiteData($data);
-        if (is_array($response)) return $response;
+        $this->loadAccountData($account);
+        $this->loadSocietyData($society);
+        $this->loadAddressData($address);
+        $this->loadWebsiteData($data);
 
-        $this->getWebsites($this->import->data['website_id']);
-
-        foreach ($service->s as $info) {
-            $response = $this->import->callCallback($info, $service);
-            if (is_array($response)) return $response;
+        if ($this->import->params['action'] == 'create') {
+            $this->import->getWebsites($this->import->data['website_id']);
         }
+        $this->import->global_data['information'] = $entries;
 
         if (isset($entries['WithAppointment']) && (string)$entries['WithAppointment'] == '1') {
-            $response = $this->import->callMethod('Jet\ImportBlock\Ikosoft\LoadBookingLink', 'load', [], ['import' => $this->import]);
+            $response = $this->import->callCallback(['n' => 'WithAppointment']);
             if (is_array($response)) return $response;
         }
-
-        $this->import->global_data['information'] = $entries;
 
         return true;
     }
@@ -178,12 +167,12 @@ class LoadWebsite extends LoadFixture
 
     /**
      * @param array $account
-     * @return array|bool
+     * @throws \Exception
      */
     private function loadAccountData($account = [])
     {
         if (!isset($account['email']) || empty($account['email']))
-            return ['status' => 'error', 'message' => $this->import->data['instance'] . ' => L\'e-mail est vide'];
+            throw new \Exception($this->import->data['instance'] . ' => L\'e-mail est vide');
         $date = new \DateTime();
         $account['first_name'] = 'Compte';
         $account['last_name'] = 'Utilisateur';
@@ -212,17 +201,16 @@ class LoadWebsite extends LoadFixture
         $req->execute($account);
 
         $this->import->data['account_id'] = isset($account['id']) ? $account['id'] : $this->import->pdo->lastInsertId();
-        return true;
     }
 
     /**
      * @param array $society
-     * @return array|bool
+     * @throws \Exception
      */
     private function loadSocietyData($society = [])
     {
         if (!isset($society['name']) || empty($society['name']))
-            return ['status' => 'error', 'message' => $this->import->data['instance'] . ' => Le nom de la société est vide'];
+            throw new \Exception($this->import->data['instance'] . ' => Le nom de la société est vide');
 
         $date = new \DateTime();
         $society['account_id'] = $this->import->data['account_id'];
@@ -243,7 +231,6 @@ class LoadWebsite extends LoadFixture
         $req->execute($society);
 
         $this->import->data['society_id'] = isset($society['id']) ? $society['id'] : $this->import->pdo->lastInsertId();
-        return true;
     }
 
     /**
@@ -266,7 +253,7 @@ class LoadWebsite extends LoadFixture
 
     /**
      * @param array $data
-     * @return array|bool
+     * @throws \Exception
      */
     private function loadWebsiteData($data = [])
     {
@@ -293,25 +280,25 @@ class LoadWebsite extends LoadFixture
                 INNER JOIN ' . $this->import->db['prefix'] . 'themes t ON w.id = t.website_id
             ';
 
-            if(!is_null($this->import->params['theme'])){
+            if (!is_null($this->import->params['theme'])) {
                 $sql .= ' AND t.id = ' . $this->import->params['theme'];
             }
 
             $res = $this->import->pdo->query($sql);
             $themes = $res->fetchAll();
-            if(isset($themes[0])) {
+            if (isset($themes[0])) {
 
                 $theme = (is_null($this->import->params['theme']))
                     ? $themes[rand(0, count($themes) - 1)] : $themes[0];
 
-                $this->import->data['website_modules'] = $theme['w_modules'];
+                $this->import->data['website_modules'] = json_encode(array_merge(json_decode($theme['w_modules'], true), [$this->import->global_data['modules']['ikosoft']]));
                 $this->import->data['theme'] = $theme;
 
                 $website = [
                     'society_id' => $this->import->data['society_id'],
                     'theme_id' => $theme['t_id'],
                     'layout_id' => $theme['l_id'],
-                    'modules' => $theme['w_modules'],
+                    'modules' => $this->import->data['website_modules'],
                     'render_system' => $theme['w_render_system'],
                     'data' => $theme['w_data'],
                     'domain' => $data['domain'],
@@ -323,7 +310,7 @@ class LoadWebsite extends LoadFixture
 
         }
 
-        if(empty($website)) return ['status' => 'error', 'message' => $this->import->data['instance'] . ' => Impossible de créer le site'];
+        if (empty($website)) throw new \Exception($this->import->data['instance'] . ' => Impossible de créer le site');
 
         $this->import->data['website'] = $website;
 
@@ -339,24 +326,5 @@ class LoadWebsite extends LoadFixture
         $req->execute($this->import->data['website']);
 
         $this->import->data['website_id'] = isset($website['id']) ? $website['id'] : $this->import->pdo->lastInsertId();
-        return true;
-    }
-
-    /**
-     * @param $website_id
-     */
-    private function getWebsites($website_id)
-    {
-        $this->import->data['websites'][] = $website_id;
-        $req = $this->import->pdo->prepare('SELECT t.website_id 
-          FROM ' . $this->import->db['prefix'] . 'websites w
-          LEFT JOIN ' . $this->import->db['prefix'] . 'themes t ON t.id = w.theme_id
-          WHERE w.id = :website_id'
-        );
-        $req->execute(['website_id' => $website_id]);
-        $res = $req->fetch();
-        if ($res !== false && $website_id != $res['website_id']) {
-            $this->getWebsites($res['website_id']);
-        }
     }
 }

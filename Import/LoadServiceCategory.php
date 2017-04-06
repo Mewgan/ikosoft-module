@@ -12,21 +12,21 @@ class LoadServiceCategory extends LoadFixture
 {
 
     /**
-     * @param $service
+     * @param $entry
      * @return array|bool
      */
-    public function load($service)
+    public function load($entry)
     {
 
         $categories = [];
 
         $this->import->data['service_categories'] = [];
 
-        foreach ($service->s as $category) {
-            foreach ($category->e as $entry) {
-                if ((string)$entry['n'] == 'Caption') {
-                    $categories[] = (string)$entry['v'];
-                    $this->import->data['service_categories'][(string)$category['n']] = (string)$entry['v'];
+        foreach ($entry->s as $category) {
+            foreach ($category->e as $e) {
+                if ((string)$e['n'] == 'Caption') {
+                    $categories[] = (string)$e['v'];
+                    $this->import->data['service_categories'][(string)$category['n']] = (string)$e['v'];
                 }
             }
         }

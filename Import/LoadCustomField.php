@@ -31,7 +31,8 @@ class LoadCustomField extends LoadFixture
 
     /**
      * @param $name
-     * @return mixed|null
+     * @return
+     * @throws \Exception
      */
     private function getCustomField($name)
     {
@@ -45,9 +46,9 @@ class LoadCustomField extends LoadFixture
         );
         $req->execute(['name' => $name]);
         $res = $req->fetchAll();
-        return (isset($res[0]))
-            ? $res[0]
-            : ['status' => 'error', 'message' => $this->import->data['instance'] . ' => Impossible de trouver le champ personnalisé'];
+        if(!isset($res[0]))
+            throw new \Exception($this->import->data['instance'] . ' => Impossible de trouver le champ personnalisé');
+        return $res[0];
     }
 
     /**
