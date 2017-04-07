@@ -1,0 +1,45 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="about-white-intro">
+            {{ form.messages(response) }}
+            <form novalidate="novalidate" id="register_form" action="#" method="POST">
+                <div class="row pad-tb-20">
+                    <h2>2. Vos informations de connexion</h2>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input type="email" placeholder="E-mail *" name="account[email]" required class="form-control" id="email">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="password" placeholder="Choisissez un mot de passe *" name="account[password]" required class="form-control" id="password">
+                    </div>
+                    <div class="col-md-6">
+                        <input type="password" placeholder="Confirmez votre mot de passe *" name="account[confirm_pass]" required class="form-control" id="confirm_pass">
+                    </div>
+                </div>
+                <div class="row pad-tb-20">
+                    <div class="col-md-12">
+                        {{ captcha.html('recaptcha') }}
+                    </div>
+                </div>
+                <em>(*) Champs obligatoires</em>
+                <div class="row pad-tb-10">
+                    <div class="col-md-12">
+                        <p>En m'inscrivant, j'accepte les <a href="{{ path('public.page.cgu') }}" target="_blank">Conditions d'utilisation et la Charte de confidentialité</a> de Webio.</p>
+                    </div>
+                </div>
+                <input type="hidden" name="_token" id="token" value="{{ token() }}">
+                <div class="row center-align pad-bottom-20">
+                    <button type="submit" name="submit" class="btn-round-bg btn-submit btn-medium">Valider</button>
+                    <button class="btn-round-bg btn-medium btn-loading" style="display:none;">Chargement ...</button>
+                </div>
+                <div id="response-message" class="alert" style="display: none;">
+                    <button data-dismiss="alert" class="close" type="button">×</button>
+                    <span></span>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

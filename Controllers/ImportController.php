@@ -158,9 +158,9 @@ class ImportController extends Controller
                             $this->recursiveCall($this->entries);
 
                             if (isset($this->data['website_id'])) {
-                                $this->createOrUpdateImport($this->data['website_id'], $instance['filename']);
                                 if (isset($this->data['website']['data']))
                                     $this->updateWebsiteData($this->data['website_id'], $this->data['website']['data']);
+                                $this->createOrUpdateImport($this->data['website_id'], $instance['filename']);
                             }
                             $this->pdo->commit();
 

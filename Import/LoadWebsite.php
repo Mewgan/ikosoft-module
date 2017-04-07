@@ -184,7 +184,7 @@ class LoadWebsite extends LoadFixture
             $account['state'] = $this->import->params['activate'];
             $account['photo_id'] = $this->import->global_data['account_photo'];
             if ($account['state'] == 1) {
-                $date = new \DateTime('+2 weeks');
+                $date = new \DateTime('+4 weeks');
                 $account['expiration_date'] = $date->format('Y-m-d H:i:s');
             }
         }

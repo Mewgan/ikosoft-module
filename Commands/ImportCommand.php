@@ -86,7 +86,7 @@ EOT
     private function loadData(InputInterface $input, OutputInterface $output)
     {
         $path = $input->getArgument('path');
-        $files = is_dir($path[0]) ? glob_recursive($path[0] . '/*.zip', GLOB_BRACE) : $path;
+        $files = is_dir($path[0]) ? glob_recursive($path[0] . '*.zip', GLOB_BRACE) : $path;
 
         /** @var Controller $controller */
         $controller = $this->app->get('JetFire\Framework\System\Controller');

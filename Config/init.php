@@ -8,7 +8,6 @@ return [
                 'path' => 'src/Modules/Ikosoft/',
                 'namespace' => '\\Jet\\Modules\\Ikosoft',
                 'view_dir' => 'src/Modules/Ikosoft/Views/',
-                'prefix' => 'admin',
             ],
         ],
         'fixtures' => [
