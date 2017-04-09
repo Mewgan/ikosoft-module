@@ -8,7 +8,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <input type="email" placeholder="E-mail *" name="account[email]" required class="form-control" id="email">
+                        <p>Choissir un mot de passe pour votre site</p>
                     </div>
                 </div>
                 <div class="row">
@@ -30,6 +30,8 @@
                         <p>En m'inscrivant, j'accepte les <a href="{{ path('public.page.cgu') }}" target="_blank">Conditions d'utilisation et la Charte de confidentialité</a> de Webio.</p>
                     </div>
                 </div>
+                <input type="hidden" name="_uid" id="uid" value="{{ uid }}">
+                <input type="hidden" name="_path" id="path" value="{{ path }}">
                 <input type="hidden" name="_token" id="token" value="{{ token() }}">
                 <div class="row center-align pad-bottom-20">
                     <button type="submit" name="submit" class="btn-round-bg btn-submit btn-medium">Valider</button>
@@ -43,3 +45,20 @@
         </div>
     </div>
 </div>
+
+{% block js %}
+    {{ captcha.js() }}
+    <script src="{{ asset('libs/jquery.validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('register.js') }}"></script>
+    <script>
+        var recaptcha;
+        var recaptchaCallback = function() {
+            //Render the recaptcha1 on the element with ID "recaptcha1"
+            recaptcha = grecaptcha.render('recaptcha', {
+                'sitekey' : '{{ public_key }}', //Replace this with your Site key
+                'theme' : 'light'
+            });
+        };
+        registerUser("{{ path('public.registration.register', {'theme_id': theme.id}) }}")
+    </script>
+{% endblock %}

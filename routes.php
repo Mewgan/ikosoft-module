@@ -1,18 +1,16 @@
 <?php
 
 return [
-    '/module/ikosoft/registration' => [
-        'use' => 'Registration/index'
+    '/module/ikosoft/register-:theme_id' => [
+        'use' => 'FrontImportController@register',
+        'name' => 'ikosoft.registration.register',
+        'ajax' => true,
+        'arguments' => ['theme_id' => '[0-9]*'],
+        'method' => 'POST',
     ],
-    /* in dev */
-    '/admin/module/ikosoft/*' => [
+    '/module/ikosoft/*' => [
         'use' => 'AdminIkosoftController@{method}',
         'ajax' => true
     ],
-    /* in prod */
-    '{subdomain}.{host}/module/ikosoft/*' => [
-        'use' => 'AdminIkosoftController@{method}',
-        'ajax' => true,
-        'subdomain' => 'admin'
-    ],
+
 ];

@@ -1,0 +1,6 @@
+{% extends "mail_layout.html.twig" %}
+
+{% block content %}
+    <p>Féliciation {{ account.first_name }} {{ account.last_name }} ! Vous venez de créer votre site</p>
+    <p>Url de votre site : {{ full_url }}</p>
+{% endblock %}

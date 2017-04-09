@@ -109,20 +109,23 @@ class LoadServiceCategory extends LoadFixture
         $data = [];
         $slug = new Slugify();
         $date = new \DateTime();
-        $keys = ['name', 'slug', 'website_id', 'created_at', 'updated_at'];
+        $keys = ['name', 'slug', 'position', 'website_id', 'created_at', 'updated_at'];
         $sql = '';
+        $i = 0;
 
         foreach ($categories as $key => $category) {
             if (!empty($category)) {
                 $values = [
                     $key . '_name' => $category,
                     $key . '_slug' => $slug->slugify($category),
+                    $key . '_position' => $i,
                     $key . '_website_id' => $this->import->data['website_id'],
                     $key . '_created_at' => $date->format('Y-m-d H:i:s'),
                     $key . '_updated_at' => $date->format('Y-m-d H:i:s')
                 ];
                 $data = array_merge($data, $values);
                 $sql .= '(:' . implode(',:', array_keys($values)) . '),';
+                ++$i;
             }
         }
         if (!empty($data)) {
