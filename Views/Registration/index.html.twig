@@ -1,8 +1,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="about-white-intro">
-            {{ form.messages(response) }}
-            <form novalidate="novalidate" id="register_form" action="#" method="POST">
+            <form novalidate="novalidate" id="register_form" action="{{ path('ikosoft.registration.register', {'theme_id': theme.id}) }}" method="POST">
                 <div class="row pad-tb-20">
                     <h2>2. Vos informations de connexion</h2>
                 </div>
@@ -38,7 +37,6 @@
                     <button class="btn-round-bg btn-medium btn-loading" style="display:none;">Chargement ...</button>
                 </div>
                 <div id="response-message" class="alert" style="display: none;">
-                    <button data-dismiss="alert" class="close" type="button">×</button>
                     <span></span>
                 </div>
             </form>
@@ -46,19 +44,7 @@
     </div>
 </div>
 
-{% block js %}
-    {{ captcha.js() }}
-    <script src="{{ asset('libs/jquery.validate/jquery.validate.min.js') }}"></script>
-    <script src="{{ asset('register.js') }}"></script>
-    <script>
-        var recaptcha;
-        var recaptchaCallback = function() {
-            //Render the recaptcha1 on the element with ID "recaptcha1"
-            recaptcha = grecaptcha.render('recaptcha', {
-                'sitekey' : '{{ public_key }}', //Replace this with your Site key
-                'theme' : 'light'
-            });
-        };
-        registerUser("{{ path('public.registration.register', {'theme_id': theme.id}) }}")
-    </script>
-{% endblock %}
+
+{{ captcha.js() }}
+<script src="{{ asset('libs/jquery.validate/jquery.validate.min.js') }}"></script>
+<script src="{{ asset('register.js') }}"></script>

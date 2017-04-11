@@ -40,6 +40,11 @@ class LoadWebsite extends LoadFixture
         $slug = new Slugify();
         $data['domain'] = $slug->slugify($society['name']);
 
+        if($this->import->getApp()->data['setting']['sub_domain'] == true){
+            $request = $this->import->getApp()->get('request');
+            $data['domain'] = ($request->has('REQUEST_SCHEME') ? $request->get('REQUEST_SCHEME') : 'http') . '://' . $data['domain'] . '.' . $request->get('SERVER_NAME');
+        }
+
         $this->loadAccountData($account);
         $this->loadSocietyData($society);
         $this->loadAddressData($address);

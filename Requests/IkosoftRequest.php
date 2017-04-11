@@ -20,7 +20,7 @@ class IkosoftRequest extends Request
             'account.confirm_pass' => 'required|noWhitespace',
             'account.password' => 'required|noWhitespace|same:account.confirm_pass|assign:crypt,password_hash',
             'captcha' => 'required',
-            '_uid|_pat|_token' => 'required',
+            '_uid|_path|_token' => 'required',
             'token' => 'assign:' . md5(uniqid(rand(), true)),
         ];
     }

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping;
 /**
  * Class IkosoftImport
  * @package Jet\Modules\Ikosoft\Models
- * @Entity
+ * @Entity(repositoryClass="Jet\Modules\Ikosoft\Models\IkosoftImportRepository")
  * @Table(name="ikosoft_imports")
  * @HasLifecycleCallbacks
  */

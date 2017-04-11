@@ -1,15 +1,16 @@
-function registerUser(api) {
+jQuery(document).ready(function(){
     jQuery("#register_form").validate({
         meta: "validate",
         submitHandler: function (e) {
             $("#register_form .btn-submit").hide();
             $("#register_form .btn-loading").show();
-            var ps = $("#password").val(),
+            var api = $('#register_form').attr('action'),
+                ps = $("#password").val(),
                 cps = $("#confirm_pass").val(),
                 uid = $("#uid").val();
-                path = $("#path").val();
-                token = $("#token").val();
-                captcha = $("#g-recaptcha-response").val();
+            path = $("#path").val();
+            token = $("#token").val();
+            captcha = $("#g-recaptcha-response").val();
             return $.post(api, {
                 account: {
                     password: ps,
@@ -27,13 +28,13 @@ function registerUser(api) {
                     ? $("#response-message").addClass('alert-danger')
                     : $("#response-message").addClass('alert-success');
                 var message = '<div>';
-                if(response.message instanceof Array || response.message instanceof Object){
-                    response.message.forEach(function (el) {
-                        el.forEach(function (item) {
-                            message += '<p>'+item+'</p>';
+                if (response.message instanceof Array || response.message instanceof Object) {
+                    $.each(response.message, function (k, el) {
+                        $.each(el, function (l, item) {
+                            message += '<p>' + item + '</p>';
                         })
                     })
-                }else
+                } else
                     message += response.message;
                 $("#response-message span").html(message + '</div>');
             }), !1
@@ -70,5 +71,5 @@ function registerUser(api) {
             _path: "Le chemin du flux xml est requis",
             _token: "Le token est requis"
         }
-    })
-}
+    });
+});
