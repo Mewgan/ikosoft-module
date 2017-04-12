@@ -39,10 +39,10 @@ class LoadWebsite extends LoadFixture
 
         $slug = new Slugify();
         $data['domain'] = $slug->slugify($society['name']);
-
-        if($this->import->getApp()->data['setting']['sub_domain'] == true){
-            $request = $this->import->getApp()->get('request');
-            $data['domain'] = ($request->has('REQUEST_SCHEME') ? $request->get('REQUEST_SCHEME') : 'http') . '://' . $data['domain'] . '.' . $request->get('SERVER_NAME');
+        $app = $this->import->getApp();
+        if ($app->data['setting']['sub_domain'] == true) {
+            $domain = explode(':', $app->data['setting']['domain']);
+            $data['domain'] = $domain[0] . '://' . $data['domain'] . '.' . str_replace('//', '', $domain[1]);
         }
 
         $this->loadAccountData($account);
@@ -177,7 +177,7 @@ class LoadWebsite extends LoadFixture
     private function loadAccountData($account = [])
     {
         if (!isset($account['email']) || empty($account['email']))
-            throw new \Exception($this->import->data['instance'] . ' => L\'e-mail est vide');
+            throw new \Exception('L\'e-mail est vide');
         $date = new \DateTime();
         $account['first_name'] = 'Compte';
         $account['last_name'] = 'Utilisateur';
@@ -215,7 +215,7 @@ class LoadWebsite extends LoadFixture
     private function loadSocietyData($society = [])
     {
         if (!isset($society['name']) || empty($society['name']))
-            throw new \Exception($this->import->data['instance'] . ' => Le nom de la société est vide');
+            throw new \Exception('Le nom de la société est vide');
 
         $date = new \DateTime();
         $society['account_id'] = $this->import->data['account_id'];

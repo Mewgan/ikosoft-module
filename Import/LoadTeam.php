@@ -125,7 +125,9 @@ class LoadTeam extends LoadFixture
         foreach ($team as $key => $member) {
             if (!empty($member)) {
                 $values = [
-                    $key . '_photo_id' => (isset($pictures[$member['GuidPicture']])) ? $pictures[$member['GuidPicture']] : null,
+                    $key . '_photo_id' => (isset($pictures[$member['GuidPicture']]))
+                        ? $pictures[$member['GuidPicture']]
+                        : $this->import->global_data['account_photo'],
                     $key . '_website_id' => $this->import->data['website_id'],
                     $key . '_full_name' => $member['DisplayName'],
                     $key . '_gender' => (int)$member['Gender'],

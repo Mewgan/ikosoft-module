@@ -10,10 +10,10 @@ use JetFire\Framework\System\Controller;
 use JetFire\Framework\System\Mail;
 
 /**
- * Class FrontImportController
+ * Class FrontIkosoftController
  * @package Jet\Modules\Ikosoft\Controllers
  */
-class FrontImportController extends Controller
+class FrontIkosoftController extends Controller
 {
 
     /**
@@ -25,7 +25,7 @@ class FrontImportController extends Controller
         $template = ROOT . '/src/Modules/Ikosoft/Views/Registration/index.html.twig';
         if ($request->has('uid')) {
             $data['uid'] = $request->get('uid');
-            $data['path'] = $this->findInstancePath($this->app->data['app']['imports']['ikosoft']['path'], $data['uid']);
+            $data['path'] = $this->findInstancePath($this->app->data['setting']['imports']['ikosoft']['path'], $data['uid']);
             if (!is_null($data['path'])) {
                 return compact('template', 'data');
             }
@@ -42,6 +42,7 @@ class FrontImportController extends Controller
     {
         $path = rtrim($path, '/') . '/';
         $files = glob_recursive($path . '*.zip', GLOB_BRACE);
+        $files = array_reverse($files);
         foreach ($files as $file) {
             $instance = pathinfo($file);
             if ($instance['filename'] == $uid) return $file;

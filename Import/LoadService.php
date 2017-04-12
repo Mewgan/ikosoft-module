@@ -171,7 +171,7 @@ class LoadService extends LoadFixture
         if(isset($this->import->global_data['information']['Language']) && isset($locales[$this->import->global_data['information']['Language']])){
             $locale = $locales[$this->import->global_data['information']['Language']];
             setlocale(LC_MONETARY, $locale['locale']);
-            return money_format($locale['format'], $price);
+            return (function_exists('money_format')) ? money_format($locale['format'], $price) : (string)$price . ' €';
         }
         return $price;
     }
