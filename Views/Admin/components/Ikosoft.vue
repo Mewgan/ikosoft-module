@@ -76,7 +76,7 @@
 <script type="text/babel">
 
     import {ikosoft_api} from '../api'
-    import {mapGetters, mapActions} from 'vuex'
+    import {mapActions} from 'vuex'
 
     export default{
 

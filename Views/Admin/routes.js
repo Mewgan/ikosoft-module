@@ -1,3 +1,5 @@
+export const provider = 'ikosoft';
+
 export var routes = [
     {
         path: 'ikosoft',
@@ -8,8 +10,27 @@ export var routes = [
     }
 ];
 
+export var global_routes = [
+    {
+        title: 'Tableau de bord',
+        path: '/ikosoft/dashboard',
+        name: 'module:ikosoft:dashboard',
+        component: resolve => {
+            require(['./components/IkosoftDashboard.vue'], resolve)
+        }
+    },
+    {
+        title: 'Clients',
+        path: '/ikosoft/client',
+        name: 'module:ikosoft:client',
+        component: resolve => {
+            require(['./components/IkosoftDashboard.vue'], resolve)
+        }
+    }
+];
+
 export var content_routes = {};
 
 export default {
-    routes, content_routes
+    provider, routes, global_routes, content_routes
 }

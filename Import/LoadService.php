@@ -154,7 +154,6 @@ class LoadService extends LoadFixture
         return true;
     }
 
-
     /**
      * @param $price
      * @return float|int|string
@@ -162,17 +161,22 @@ class LoadService extends LoadFixture
     private function formatPrice($price)
     {
         $price = ((int)$price)/100;
-        $locales = [
-            'FRA' => [
-                'locale' => 'fr_FR.utf8',
-                'format' => '%(#1n'
-            ]
-        ];
-        if(isset($this->import->global_data['information']['Language']) && isset($locales[$this->import->global_data['information']['Language']])){
-            $locale = $locales[$this->import->global_data['information']['Language']];
-            setlocale(LC_MONETARY, $locale['locale']);
-            return (function_exists('money_format')) ? money_format($locale['format'], $price) : (string)$price . ' €';
+        if(isset($this->import->global_data['information']['CountryCode']) && function_exists('money_format')){
+            switch ($this->import->global_data['information']['CountryCode']){
+                case '1':
+                    setlocale(LC_MONETARY, 'en_US');
+                    return money_format('%(#10n', $price);
+                    break;
+                case '44':
+                    setlocale(LC_MONETARY, 'en_GB');
+                    return money_format('%n', $price);
+                    break;
+                default:
+                    setlocale(LC_MONETARY, 'fr_FR.utf8');
+                    return money_format('%(#1n', $price);
+                    break;
+            }
         }
-        return $price;
+        return (string)$price . ' €';
     }
 }

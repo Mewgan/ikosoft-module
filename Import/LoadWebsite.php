@@ -3,6 +3,7 @@
 namespace Jet\Modules\Ikosoft\Import;
 
 use Cocur\Slugify\Slugify;
+use JetFire\Framework\App;
 
 /**
  * Class LoadWebsite
@@ -45,7 +46,7 @@ class LoadWebsite extends LoadFixture
             $data['domain'] = $domain[0] . '://' . $data['domain'] . '.' . str_replace('//', '', $domain[1]);
         }
 
-        $this->loadAccountData($account);
+        $this->loadAccountData($app, $account);
         $this->loadSocietyData($society);
         $this->loadAddressData($address);
         $this->loadWebsiteData($data);
@@ -171,10 +172,11 @@ class LoadWebsite extends LoadFixture
       }*/
 
     /**
+     * @param App $app
      * @param array $account
      * @throws \Exception
      */
-    private function loadAccountData($account = [])
+    private function loadAccountData($app, $account = [])
     {
         if (!isset($account['email']) || empty($account['email']))
             throw new \Exception('L\'e-mail est vide');
@@ -188,8 +190,8 @@ class LoadWebsite extends LoadFixture
             $account['registered_at'] = $account['updated_at'];
             $account['state'] = $this->import->params['activate'];
             $account['photo_id'] = $this->import->global_data['account_photo'];
-            if ($account['state'] == 1) {
-                $date = new \DateTime('+4 weeks');
+            if ($account['state'] == 1 && isset($app->data['app']['settings']['trial_days'])) {
+                $date = new \DateTime($app->data['app']['settings']['trial_days']);
                 $account['expiration_date'] = $date->format('Y-m-d H:i:s');
             }
         }

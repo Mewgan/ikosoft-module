@@ -73,13 +73,17 @@ class FrontIkosoftController extends Controller
                                 $import = IkosoftImport::repo()->getImportAccount($values['_uid']);
                                 if (isset($import['website']['society']['account']['email']) && isset($import['website']['domain'])) {
 
-                                    if(Account::where('id', $import['website']['society']['account']['id'])->set(['password' => $values['password']])) {
+                                    if(Account::where('id', $import['website']['society']['account']['id'])->set(['password' => $values['account']['password']])) {
 
                                         $full_url = (substr($import['website']['domain'], 0, 4) === 'http')
                                             ? $import['website']['domain']
                                             : rtrim($this->app->data['setting']['domain'], '/') . '/site/' . $import['website']['domain'];
 
-                                        $content = $this->render('Mail/account_created', ['full_url' => $full_url, 'account' => $import['website']['society']['account']]);
+                                        $content = $this->render('Mail/account_created', [
+                                            'full_url' => $full_url,
+                                            'account' => $import['website']['society']['account'],
+                                            'admin_domain' => $this->app->data['setting']['admin_domain']
+                                        ]);
                                         return (!$mail->sendTo($import['website']['society']['account']['email'], 'Confirmation d\'inscription', $content))
                                             ? ['status' => 'error', 'message' => 'Erreur lors de l\'envoie du mail']
                                             : ['status' => 'success', 'message' => 'Merci de votre inscription ! Vous allez recevoir un mail de confirmation d\'inscription'];

@@ -2,5 +2,9 @@
 
 {% block content %}
     <p>Féliciation {{ account.first_name }} {{ account.last_name }} ! Vous venez de créer votre site</p>
-    <p>Url de votre site : {{ full_url }}</p>
+    <p>Url de votre site : <a href="{{ full_url }}" target="_blank">{{ full_url }}</a></p>
+    <p>Et voici vos accès admin :</p>
+    <p>Url de l'admin :  <a href="{{ admin_domain }}" target="_blank">{{ admin_domain }}</a></p>
+    <p>Identifiant : {{ account.email }}</p>
+    <p>Mot de passe : le mot de passe que vous avez renseigné lors de votre inscription</p>
 {% endblock %}
