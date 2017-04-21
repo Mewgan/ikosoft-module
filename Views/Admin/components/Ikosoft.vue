@@ -86,7 +86,6 @@
                 loader: {
                     'SalonInformation' : 'Informations sur le salon',
                     'TimeTable' : 'Les horaires',
-                    'WithAppointment' : 'Réservation en ligne',
                     'Suppliers' : 'Les partenaires',
                     'Pictures' : 'Les images',
                     'Employees' : 'L\'équipe',

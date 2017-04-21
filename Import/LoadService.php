@@ -177,6 +177,6 @@ class LoadService extends LoadFixture
                     break;
             }
         }
-        return (string)$price . ' €';
+        return (string)$price . ' ' . $this->import->global_data['information']['CurrencySymbol'];
     }
 }

@@ -42,8 +42,8 @@ class LoadWebsite extends LoadFixture
         $data['domain'] = $slug->slugify($society['name']);
         $app = $this->import->getApp();
         if ($app->data['setting']['sub_domain'] == true) {
-            $domain = explode(':', $app->data['setting']['domain']);
-            $data['domain'] = $domain[0] . '://' . $data['domain'] . '.' . str_replace('//', '', $domain[1]);
+            $domain = explode('://', $app->data['setting']['domain']);
+            $data['domain'] = 'http://' . $data['domain'] . '.' . $domain[1];
         }
 
         $this->loadAccountData($app, $account);
@@ -246,6 +246,11 @@ class LoadWebsite extends LoadFixture
     private function loadAddressData($address = [])
     {
         $address['society_id'] = $this->import->data['society_id'];
+        if((string)$address['longitude'] == '0' && (string)$address['altitude'] == '0'){
+            $xy = geocode($address['address'] . ' ,' . $address['city'] . ' ' .  $address['postal_code'] . ' ' .  $address['country']);
+            $address['latitude'] = $xy[0];
+            $address['longitude'] = $xy[1];
+        }
         $keys = array_keys($address);
         if ($this->import->params['action'] == 'update' && isset($address['id'])) {
             $sql = '';

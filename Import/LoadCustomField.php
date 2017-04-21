@@ -34,7 +34,7 @@ class LoadCustomField extends LoadFixture
      * @return
      * @throws \Exception
      */
-    private function getCustomField($name)
+    protected function getCustomField($name)
     {
         $req = $this->import->pdo->prepare('SELECT cf.id, cf.rule_id, cf.title, cf.operation, cf.value, cf.access_level
             FROM ' . $this->import->db['prefix'] . 'admin_custom_fields acf
@@ -47,7 +47,7 @@ class LoadCustomField extends LoadFixture
         $req->execute(['name' => $name]);
         $res = $req->fetchAll();
         if(!isset($res[0]))
-            throw new \Exception($this->import->data['instance'] . ' => Impossible de trouver le champ personnalisé');
+            throw new \Exception('Impossible de trouver le champ personnalisé');
         return $res[0];
     }
 
@@ -55,7 +55,7 @@ class LoadCustomField extends LoadFixture
      * @param array $custom_field
      * @return null|string
      */
-    private function createNewCustomField($custom_field = [])
+    protected function createNewCustomField($custom_field = [])
     {
         $cf_values = [
             'rule_id' => $custom_field['rule_id'],
@@ -74,7 +74,7 @@ class LoadCustomField extends LoadFixture
      * @param $custom_field_id
      * @return array
      */
-    private function getAdminCustomFields($custom_field_id)
+    protected function getAdminCustomFields($custom_field_id)
     {
         $req = $this->import->pdo->prepare('SELECT * FROM ' . $this->import->db['prefix'] . 'admin_custom_fields acf WHERE acf.custom_field_id = ?');
         $req->execute([$custom_field_id]);
@@ -88,7 +88,7 @@ class LoadCustomField extends LoadFixture
      * @param array $callback
      * @param array $args
      */
-    private function createAdminCustomFields($acf, $custom_field_id, $name, $callback = [], $args = [])
+    protected function createAdminCustomFields($acf, $custom_field_id, $name, $callback = [], $args = [])
     {
         $sql = '';
         $acf_values = [];

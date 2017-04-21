@@ -92,6 +92,10 @@ class ImportController extends Controller
                 'call' => 'Jet\Modules\Ikosoft\Import\LoadBookingLink@load',
                 'depend' => 'SalonInformation'
             ],
+            'Facebook' => [
+                'call' => 'Jet\Modules\Ikosoft\Import\LoadBookingLink@load',
+                'depend' => 'SalonInformation'
+            ],
             'Suppliers' => [
                 'call' => 'Jet\Modules\Ikosoft\Import\LoadSupplier@load',
                 'depend' => 'SalonInformation'
@@ -267,7 +271,6 @@ class ImportController extends Controller
             'data' => json_encode([
                 'SalonInformation' => 1,
                 'TimeTable' => 1,
-                'WithAppointment' => 1,
                 'Suppliers' => 1,
                 'Pictures' => 1,
                 'Employees' => 1,
