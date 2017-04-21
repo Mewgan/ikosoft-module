@@ -16,9 +16,9 @@ class LoadMedia extends LoadFixture
     private function getWebsitePath()
     {
         $path = '/public/media/sites/' . $this->import->data['website_id'] . '/';
-        if(is_writable(ROOT . '/public/media/sites/') !== true) throw new \Exception('Vous n\'avez pas les permissions pour écrire dans le dossier : ' . ROOT . '/public/media/sites/');
+        if (is_writable(ROOT . '/public/media/sites/') !== true) throw new \Exception('Vous n\'avez pas les permissions pour écrire dans le dossier : ' . ROOT . '/public/media/sites/');
         if (!is_dir(ROOT . $path))
-            if(mkdir(ROOT . $path) === false) throw new \Exception('Impossible de créer le dossier : ' . ROOT . $path);
+            if (mkdir(ROOT . $path) === false) throw new \Exception('Impossible de créer le dossier : ' . ROOT . $path);
         return $path;
     }
 
@@ -28,15 +28,17 @@ class LoadMedia extends LoadFixture
     public function load()
     {
         $medias = [];
-        $files = glob($this->import->data['instance_path'] . '*.{jpg,gif,png}', GLOB_BRACE);
-        foreach ($files as $media) {
-            $file = pathinfo($media);
-            $medias[$file['filename']] = $this->getWebsitePath() . $file['filename'] . '.' . $file['extension'];
-        }
-        if(!empty($medias)) {
-            $media_in_db = $this->getMediaFromDb();
-            $medias = $this->removeUnusedMedia($media_in_db, $medias);
-            $this->createMedia($medias);
+        if (is_dir($this->import->data['instance_path'])) {
+            $files = glob($this->import->data['instance_path'] . '*.{jpg,gif,png}', GLOB_BRACE);
+            foreach ($files as $media) {
+                $file = pathinfo($media);
+                $medias[$file['filename']] = $this->getWebsitePath() . $file['filename'] . '.' . $file['extension'];
+            }
+            if (!empty($medias)) {
+                $media_in_db = $this->getMediaFromDb();
+                $medias = $this->removeUnusedMedia($media_in_db, $medias);
+                $this->createMedia($medias);
+            }
         }
         return true;
     }
@@ -105,7 +107,7 @@ class LoadMedia extends LoadFixture
                     $ext = explode('.', $new_path);
                     $ext = end($ext);
                     if (copy($this->import->data['instance_path'] . $media . '.' . $ext, ROOT . $new_path) === false)
-                        throw new \Exception('Erreur lors de la copie du fichier : ' . $this->import->data['instance_path'] . $media . '.' . $ext . ' vers : ' .ROOT . $new_path);
+                        throw new \Exception('Erreur lors de la copie du fichier : ' . $this->import->data['instance_path'] . $media . '.' . $ext . ' vers : ' . ROOT . $new_path);
                 }
             }
         }

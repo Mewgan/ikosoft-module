@@ -24,7 +24,7 @@ export var global_routes = [
         path: '/ikosoft/client',
         name: 'module:ikosoft:client',
         component: resolve => {
-            require(['./components/IkosoftDashboard.vue'], resolve)
+            require(['./components/IkosoftClient.vue'], resolve)
         }
     }
 ];

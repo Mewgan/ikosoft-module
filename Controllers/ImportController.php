@@ -138,46 +138,49 @@ class ImportController extends Controller
      */
     public function load($file)
     {
-        if (is_file($file) && substr($file, -4) === ".zip") {
+        if (is_file($file)) {
+
+            $xml = $file;
+
             $dir = ((substr($file, 0, 1) === '/') ? dirname($file) : ROOT . '/' . dirname($file)) . '/';
             $instance = pathinfo($file);
-            $response = $this->extractZip($file, $dir . $instance['filename']);
-            if ($response === true) {
-                if (is_dir($dir . $instance['filename'])) {
-                    if (is_file($xml = ($dir . $instance['filename'] . '/' . $instance['filename'] . '.xini'))) {
-                        try {
-                            $this->initCallback();
-                            $this->entries = new \SimpleXMLElement(file_get_contents($xml));
-                            $this->pdo->beginTransaction();
 
-                            $this->data = ['instance' => $instance['filename'], 'instance_path' => $dir . $instance['filename'] . '/'];
-
-                            $this->params['action'] = ($this->instanceInDb($instance['filename'])) ? 'update' : 'create';
-                            if (!$this->params['automatic_update']) return false;
-
-                            $this->recursiveCall($this->entries);
-
-                            if (isset($this->data['website_id'])) {
-                                if (isset($this->data['website']['data']))
-                                    $this->updateWebsiteData($this->data['website_id'], $this->data['website']['data']);
-                                $this->createOrUpdateImport($this->data['website_id'], $instance['filename']);
-                            }
-                            $this->pdo->commit();
-
-                        } catch (\Exception $e) {
-                            $this->pdo->rollBack();
-                            return ['status' => 'error', 'message' => $instance['filename'] . ' => ' . $e->getMessage()];
-                        }
-
-                        return $this->params['action'];
-                    }
-                    return ['status' => 'error', 'message' => 'Impossible de trouver le fichier d\'import : "' . $instance['filename'] . '.xini"'];
-                }
-                return ['status' => 'error', 'message' => 'Impossible de trouver le dossier de l\'instance : "' . $dir . $instance['filename'] . '"'];
+            if(substr($file, -4) === ".zip") {
+                $response = $this->extractZip($file, $dir . $instance['filename']);
+                if ($response !== true) return $response;
+                $xml = $dir . $instance['filename'] . '/' . $instance['filename'] . '.xini';
             }
-            return $response;
+
+            if (is_file($xml)) {
+                try {
+                    $this->initCallback();
+                    $this->entries = new \SimpleXMLElement(file_get_contents($xml));
+                    $this->pdo->beginTransaction();
+
+                    $this->data = ['instance' => $instance['filename'], 'instance_path' => $dir . $instance['filename'] . '/'];
+
+                    $this->params['action'] = ($this->instanceInDb($instance['filename'])) ? 'update' : 'create';
+                    if (!$this->params['automatic_update']) return false;
+
+                    $this->recursiveCall($this->entries);
+
+                    if (isset($this->data['website_id'])) {
+                        if (isset($this->data['website']['data']))
+                            $this->updateWebsiteData($this->data['website_id'], $this->data['website']['data']);
+                        $this->createOrUpdateImport($this->data['website_id'], $instance['filename']);
+                    }
+                    $this->pdo->commit();
+
+                } catch (\Exception $e) {
+                    $this->pdo->rollBack();
+                    return ['status' => 'error', 'message' => $instance['filename'] . ' => ' . $e->getMessage()];
+                }
+
+                return $this->params['action'];
+            }
+            return ['status' => 'error', 'message' => 'Impossible de trouver le fichier d\'import : "' . $instance['filename'] . '.xini"'];
         }
-        return ['status' => 'error', 'message' => 'Impossible de trouver l\'archive zip : "' . $file . '"'];
+        return ['status' => 'error', 'message' => 'Impossible de trouver le fichier : "' . $file . '"'];
     }
 
     /**
