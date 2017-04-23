@@ -61,6 +61,16 @@ class LoadWebsite extends LoadFixture
             if (is_array($response)) return $response;
         }
 
+        if (isset($entries['Facebook']) && !empty($entries['Facebook'])) {
+            $response = $this->import->callCallback(['n' => 'Facebook']);
+            if (is_array($response)) return $response;
+        }
+
+        if (isset($entries['Comment']) && !empty($entries['Comment'])) {
+            $response = $this->import->callCallback(['n' => 'Comment']);
+            if (is_array($response)) return $response;
+        }
+
         return true;
     }
 
@@ -246,10 +256,10 @@ class LoadWebsite extends LoadFixture
     private function loadAddressData($address = [])
     {
         $address['society_id'] = $this->import->data['society_id'];
-        if((string)$address['longitude'] == '0' && (string)$address['altitude'] == '0'){
+        if((string)$address['longitude'] == '0' && (string)$address['latitude'] == '0'){
             $xy = geocode($address['address'] . ' ,' . $address['city'] . ' ' .  $address['postal_code'] . ' ' .  $address['country']);
-            $address['latitude'] = $xy[0];
-            $address['longitude'] = $xy[1];
+            $address['latitude'] = (isset($xy[0]) && !empty($xy[0])) ? $xy[0] : 0;
+            $address['longitude'] = (isset($xy[1]) && !empty($xy[1])) ? $xy[1] : 0;
         }
         $keys = array_keys($address);
         if ($this->import->params['action'] == 'update' && isset($address['id'])) {

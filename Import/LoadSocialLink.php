@@ -30,7 +30,7 @@ class LoadSocialLink extends LoadCustomField
     private function loadSocialLink()
     {
         if ($this->hasField($this->import->data['website_id'], 'social_networks') == true) {
-            $this->updateSocialField();
+            $this->updateSocialField('social_networks');
         } else {
             $this->createSocialField('social_networks');
         }

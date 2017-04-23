@@ -93,7 +93,11 @@ class ImportController extends Controller
                 'depend' => 'SalonInformation'
             ],
             'Facebook' => [
-                'call' => 'Jet\Modules\Ikosoft\Import\LoadBookingLink@load',
+                'call' => 'Jet\Modules\Ikosoft\Import\LoadSocialLink@load',
+                'depend' => 'SalonInformation'
+            ],
+            'Comment' => [
+                'call' => 'Jet\Modules\Ikosoft\Import\LoadAboutUs@load',
                 'depend' => 'SalonInformation'
             ],
             'Suppliers' => [
