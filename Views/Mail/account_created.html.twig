@@ -1,10 +1,47 @@
 {% extends "mail_layout.html.twig" %}
 
 {% block content %}
-    <p>Féliciation {{ account.first_name }} {{ account.last_name }} ! Vous venez de créer votre site</p>
-    <p>Url de votre site : <a href="{{ full_url }}" target="_blank">{{ full_url }}</a></p>
-    <p>Et voici vos accès admin :</p>
-    <p>Url de l'admin :  <a href="{{ admin_domain }}" target="_blank">{{ admin_domain }}</a></p>
-    <p>Identifiant : {{ account.email }}</p>
-    <p>Mot de passe : le mot de passe que vous avez renseigné lors de votre inscription</p>
+
+    <table class="responsive-table" bgcolor="#ffffff" align="center" width="100%" border="0" cellpadding="0" cellspacing="0">
+        <tbody>
+        <tr>
+            <td>
+                <p>Bonjour {{ account.first_name }} {{ account.last_name }},</p>
+                <p>Féliciations ! Vous venez de créer votre nouveau site internet. Merci d'avoir choisi notre solution <span style="color: #26a69a;">Webzy</span>.</p>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <div><!--[if mso]>
+                    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ full_url }}" style="height:36px;v-text-anchor:middle;width:200px;" arcsize="14%" strokecolor="#ffffff" fillcolor="#161a0f">
+                        <w:anchorlock/>
+                        <center style="color:#ffffff;font-family:sans-serif;font-size:13px;font-weight:bold;">Visiter mon site</center>
+                    </v:roundrect>
+                    <![endif]--><a target="_blank" href="{{ full_url }}" style="background-color:#161a0f;border:1px solid #ffffff;border-radius:5px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:36px;text-align:center;text-decoration:none;width:200px;-webkit-text-size-adjust:none;mso-hide:all;">Visiter mon site</a></div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>Pour modifier les contenus de votre site, connectez-vous avec <span style="color: #26a69a;">votre e-mail</span> et le <span style="color: #26a69a;">mot de passe</span> renseigné lors de votre inscription.</p>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <div><!--[if mso]>
+                    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="{{ setting.admin_domain }}" style="height:36px;v-text-anchor:middle;width:200px;" arcsize="14%" strokecolor="#ffffff" fillcolor="#26a69a">
+                        <w:anchorlock/>
+                        <center style="color:#ffffff;font-family:sans-serif;font-size:13px;font-weight:bold;">Me connecter</center>
+                    </v:roundrect>
+                    <![endif]--><a target="_blank" href="{{ setting.admin_domain }}" style="background-color:#26a69a;border:1px solid #ffffff;border-radius:5px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:36px;text-align:center;text-decoration:none;width:200px;-webkit-text-size-adjust:none;mso-hide:all;">Me connecter</a></div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <p>Testez votre nouveau site pendant <span style="color: #26a69a;">30 jours</span>. Une fois la période d'essai aura expiré, le site sera désactivé.</p>
+                <p>Pour <span style="color: #26a69a;">conserver votre site</span>, veuillez contacter un administrateur de la plateforme.</p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
 {% endblock %}
