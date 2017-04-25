@@ -76,7 +76,7 @@ class LoadCustomField extends LoadFixture
      */
     protected function getAdminCustomFields($custom_field_id)
     {
-        $req = $this->import->pdo->prepare('SELECT * FROM ' . $this->import->db['prefix'] . 'admin_custom_fields acf WHERE acf.custom_field_id = ?');
+        $req = $this->import->pdo->prepare('SELECT * FROM ' . $this->import->db['prefix'] . 'admin_custom_fields acf WHERE acf.custom_field_id = ? ORDER BY acf.id');
         $req->execute([$custom_field_id]);
         return $req->fetchAll(PDO::FETCH_ASSOC);
     }

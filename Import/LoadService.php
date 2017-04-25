@@ -164,15 +164,19 @@ class LoadService extends LoadFixture
         if(isset($this->import->global_data['information']['CountryCode']) && function_exists('money_format')){
             switch ($this->import->global_data['information']['CountryCode']){
                 case '1':
-                    setlocale(LC_MONETARY, 'en_US');
+                    setlocale(LC_MONETARY, 'en_US.UTF-8');
                     return money_format('%(#10n', $price);
                     break;
                 case '44':
-                    setlocale(LC_MONETARY, 'en_GB');
+                    setlocale(LC_MONETARY, 'en_GB.UTF-8');
                     return money_format('%n', $price);
                     break;
+                case '33':
+                    setlocale(LC_MONETARY, 'fr_FR.UTF-8');
+                    return money_format('%(#1n', $price);
+                    break;
                 default:
-                    setlocale(LC_MONETARY, 'fr_FR.utf8');
+                    setlocale(LC_MONETARY, 'fr_FR.UTF-8');
                     return money_format('%(#1n', $price);
                     break;
             }

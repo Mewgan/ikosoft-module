@@ -99,9 +99,10 @@ class LoadSocialLink extends LoadCustomField
         $sql = '';
         $acf_values = [];
         $keys = ['parent_id', 'custom_field_id', 'title', 'name', 'description', 'type', 'position', 'access_level', 'required', 'data', 'content'];
+        $parent_id = null;
         foreach ($acf as $key => $field) {
             $values = [
-                $key . 'parent_id' => is_null($field['parent_id']) ? NULL : $field['parent_id'],
+                $key . 'parent_id' => $parent_id,
                 $key . 'custom_field_id' => $custom_field_id,
                 $key . 'title' => $field['title'],
                 $key . 'name' => $field['name'],
@@ -113,9 +114,17 @@ class LoadSocialLink extends LoadCustomField
                 $key . 'data' => $field['data'],
                 $key . 'content' => (isset($this->callback[$field['name']])) ? call_user_func_array([$this, $this->callback[$field['name']]], [$field['content']]) : $field['content'],
             ];
-            $acf_values = array_merge($acf_values, $values);
             $sql .= '(:' . implode(',:', array_keys($values)) . '),';
+            if($field['name'] == 'social_networks') {
+                $sql2 = rtrim($sql, ',');
+                $req = $this->import->pdo->prepare('INSERT INTO ' . $this->import->db['prefix'] . 'admin_custom_fields (' . implode(',', $keys) . ') VALUES ' . $sql2);
+                $req->execute($values);
+                $parent_id = $this->import->pdo->lastInsertId();
+            }else
+                $acf_values = array_merge($acf_values, $values);
+
         }
+
         if (!empty($acf_values)) {
             $sql = rtrim($sql, ',');
             $req = $this->import->pdo->prepare('INSERT INTO ' . $this->import->db['prefix'] . 'admin_custom_fields (' . implode(',', $keys) . ') VALUES ' . $sql);
