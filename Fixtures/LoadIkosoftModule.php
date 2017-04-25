@@ -2,12 +2,11 @@
 namespace Jet\Modules\Ikosoft\Fixtures;
 
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\AbstractFixture;
 use Jet\Services\LoadFixture;
 
-class LoadIkosoftModule extends AbstractFixture implements DependentFixtureInterface, OrderedFixtureInterface
+class LoadIkosoftModule extends AbstractFixture implements DependentFixtureInterface
 {
     use LoadFixture;
 
@@ -38,15 +37,5 @@ class LoadIkosoftModule extends AbstractFixture implements DependentFixtureInter
         return [
             'Jet\Modules\Ikosoft\Fixtures\LoadIkosoftModuleCategory'
         ];
-    }
-
-    /**
-     * Get the order of this fixture
-     *
-     * @return integer
-     */
-    public function getOrder()
-    {
-        return 1000;
     }
 }
