@@ -44,7 +44,7 @@ class LoadSocialLink extends LoadCustomField
         if (isset($this->import->data['websites'])) {
             $custom_field = $this->getCustomField($name);
             if (isset($custom_field['id'])) {
-                $data = json_decode($this->import->data['website']['data'], true);
+                $data = is_array($this->import->data['website']['data']) ? $this->import->data['website']['data'] : json_decode($this->import->data['website']['data'], true);
                 $data['parent_exclude']['custom_fields'] = isset($data['parent_exclude']['custom_fields'])
                     ? array_merge($data['parent_exclude']['custom_fields'], [$custom_field['id']])
                     : [$custom_field['id']];
@@ -114,15 +114,15 @@ class LoadSocialLink extends LoadCustomField
                 $key . 'data' => $field['data'],
                 $key . 'content' => (isset($this->callback[$field['name']])) ? call_user_func_array([$this, $this->callback[$field['name']]], [$field['content']]) : $field['content'],
             ];
-            $sql .= '(:' . implode(',:', array_keys($values)) . '),';
             if($field['name'] == 'social_networks') {
-                $sql2 = rtrim($sql, ',');
+                $sql2 = '(:' . implode(',:', array_keys($values)) . ')';
                 $req = $this->import->pdo->prepare('INSERT INTO ' . $this->import->db['prefix'] . 'admin_custom_fields (' . implode(',', $keys) . ') VALUES ' . $sql2);
                 $req->execute($values);
                 $parent_id = $this->import->pdo->lastInsertId();
-            }else
+            }else {
+                $sql .= '(:' . implode(',:', array_keys($values)) . '),';
                 $acf_values = array_merge($acf_values, $values);
-
+            }
         }
 
         if (!empty($acf_values)) {

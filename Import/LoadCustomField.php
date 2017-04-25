@@ -128,7 +128,7 @@ class LoadCustomField extends LoadFixture
         if (isset($this->import->data['websites'])) {
             $custom_field = $this->getCustomField($name);
             if (isset($custom_field['id'])) {
-                $data = json_decode($this->import->data['website']['data'], true);
+                $data = is_array($this->import->data['website']['data']) ? $this->import->data['website']['data'] : json_decode($this->import->data['website']['data'], true);
                 $data['parent_exclude']['custom_fields'] = isset($data['parent_exclude']['custom_fields'])
                     ? array_merge($data['parent_exclude']['custom_fields'], [$custom_field['id']])
                     : [$custom_field['id']];

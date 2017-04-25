@@ -141,46 +141,8 @@
             </table>
         </td>
     </tr>
-    <tr>
-        <td>
-            <table class="responsive-table" align="center" width="50%" border="0" cellpadding="0" cellspacing="0">
-                <tbody>
-                <tr>
-                    <td>
-                        <img src="{{ asset('WEBZY-Creation-de-site-web.jpg', true) }}" width="100%" style="width: 100%;" title="Webzy création de site web" alt="Webzy création de site web"/>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <table class="responsive-table" bgcolor="#ffffff" align="center" width="50%" border="0" cellpadding="0" cellspacing="0">
-                <tbody>
-                <tr>
-                    <td height="30" style="font-size: 30px;line-height: 30px;"></td>
-                </tr>
-                </tbody>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <table class="responsive-table" bgcolor="#ffffff" align="center" width="50%" border="0" cellpadding="0" cellspacing="0">
-                <tbody>
-                <tr>
-                    <td width="5%"></td>
-                    <td width="90%" style="font-family: Questrial,Helvetica, arial, sans-serif; font-size: 18px; color: #282828; text-align:left;">
-                        {% block content %}
-                        {% endblock %}
-                    </td>
-                    <td width="5%"></td>
-                </tr>
-                </tbody>
-            </table>
-        </td>
-    </tr>
+    {% block content %}
+    {% endblock %}
     <tr>
         <td>
             <table class="responsive-table" bgcolor="#ffffff" align="center" width="50%" border="0" cellpadding="0" cellspacing="0">
