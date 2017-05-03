@@ -27,6 +27,13 @@ class LoadWebsite extends LoadFixture
             $entries[(string)$e['n']] = (string)$e['v'];
         }
 
+        if(!is_null($this->import->params['email'])){
+            $account['email'] = $this->import->params['email'];
+        }
+        if(!is_null($this->import->params['society'])){
+            $society['name'] = $this->import->params['society'];
+        }
+
         $data = ($this->import->params['action'] == 'update') ? $this->getInstanceData($entries['Guid']) : [];
         if (!empty($data) && $data === false) return ['status' => 'error', 'message' => $entries['Guid'] . ' => Impossible de  récupérer les données'];
         if (!empty($data)) {

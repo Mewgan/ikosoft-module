@@ -48,6 +48,8 @@ class ImportCommand extends Command
             ->setDescription('Import data from xml files')
             ->addArgument('path', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'The directory or file path.')
             ->addOption('theme', null, InputOption::VALUE_REQUIRED, 'Select the website theme', null)
+            ->addOption('email', null, InputOption::VALUE_REQUIRED, 'Account e-mail address', null)
+            ->addOption('society', null, InputOption::VALUE_REQUIRED, 'Select the society name', null)
             ->addOption('activate', 'a', InputOption::VALUE_NONE, 'Activate the instance')
             ->setHelp(<<<EOT
 The <info>jet import:data path/to/load</info> command import xml data to your database 
@@ -99,9 +101,15 @@ EOT
 
         /** @var ImportController $import */
         $import = $controller->callController('Jet\Modules\Ikosoft\Controllers\ImportController');
-        if ($input->getOption('activate')) $import->setParams(['activate' => 1]);
-        if ($input->getOption('theme')) $import->setParams(['theme' => $input->getOption('theme')]);
 
+        $params = [
+            'theme' => $input->getOption('theme'),
+            'email' => $input->getOption('email'),
+            'society' => $input->getOption('society'),
+        ];
+        if ($input->getOption('activate')) $params['activate'] = 1;
+
+        $import->setParams($params);
         $import->loadGlobalData();
 
         $responses = [];

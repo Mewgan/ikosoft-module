@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        {% block head %}
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+            <title>{% block title %}{% endblock %}</title>
+            <meta name="description" content="{% block description %}{% endblock %}">
+
+            <link rel="icon" href="{{ asset('favicon.ico') }}" />
+            {#{{ debug_bar_header()|raw }}#}
+            <!-- Core Css Stylesheets -->
+            <link href="{{ asset('front/base.css') }}" rel="stylesheet">
+            <link href="{{ asset('front/rev-slider.css') }}" rel="stylesheet">
+            <link href="{{ asset('main.css') }}" rel="stylesheet">
+            <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
+
+            <script src="{{ asset('front/modernizr-2.6.2.min.js') }}"></script>
+            <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+            <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+            <![endif]-->
+
+            <script type='text/javascript' src="{{ asset('front/jquery-min.js') }}"></script>
+
+            {% block css %}{% endblock %}
+
+        {% endblock %}
+
+    </head>
+    <body class="wrapper {% block bodyClass %}{% endblock %}">
+
+    {% include 'Includes/header.html.twig' %}
+
+    {% block body %}{% endblock %}
+
+    {% include 'Includes/footer.html.twig' %}
+
+    <script async type='text/javascript' src="{{ asset('front/library-script.js') }}"></script>
+    <script async type='text/javascript' src="{{ asset('front/jquery.mb.YTPlayer.js') }}"></script>
+    <!-- REVOLUTION JS FILES -->
+    <script async type='text/javascript' src="{{ asset('libs/revolution/js/jquery.themepunch.tools.min.js') }}"></script>
+    <script async type='text/javascript' src="{{ asset('libs/revolution/js/jquery.themepunch.revolution.min.js') }}"></script>
+    <!-- SLIDER REVOLUTION 5.0 EXTENSIONS
+    (Load Extensions only on Local File Systems !
+     The following part can be removed on Server for On Demand Loading) -->
+    <script async type="text/javascript" src="{{ asset('libs/revolution/js/extensions/revolution.extension.actions.min.js') }}"></script>
+    <script async type="text/javascript" src="{{ asset('libs/revolution/js/extensions/revolution.extension.carousel.min.js') }}"></script>
+    <script async type="text/javascript" src="{{ asset('libs/revolution/js/extensions/revolution.extension.kenburn.min.js') }}"></script>
+    <script async type="text/javascript" src="{{ asset('libs/revolution/js/extensions/revolution.extension.layeranimation.min.js') }}"></script>
+    <script async type="text/javascript" src="{{ asset('libs/revolution/js/extensions/revolution.extension.migration.min.js') }}"></script>
+    <script async type="text/javascript" src="{{ asset('libs/revolution/js/extensions/revolution.extension.navigation.min.js') }}"></script>
+    <script async type="text/javascript" src="{{ asset('libs/revolution/js/extensions/revolution.extension.parallax.min.js') }}"></script>
+    <script async type="text/javascript" src="{{ asset('libs/revolution/js/extensions/revolution.extension.slideanims.min.js') }}"></script>
+    <script async type="text/javascript" src="{{ asset('libs/revolution/js/extensions/revolution.extension.video.min.js') }}"></script>
+
+    <script async type="text/javascript" src="{{ asset('front/init.js') }}"></script>
+    <script async type='text/javascript' src="{{ asset('front/site-custom.js') }}"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+    <script>
+        window.addEventListener("load", function(){
+            window.cookieconsent.initialise({
+                "palette": {
+                    "popup": {
+                        "background": "#000"
+                    },
+                    "button": {
+                        "background": "#f1d600"
+                    }
+                },
+                "showLink": false,
+                "content": {
+                    "message": "Cette plateforme utilise des cookies. Les cookies sont utilisés pour analyser l'utilisation du site par les visiteurs afin de l'améliorer.",
+                    "dismiss": "Ok"
+                }
+            })});
+    </script>
+    {% block js %}{% endblock %}
+
+    {#{{ debug_bar_footer()|raw }}#}
+    </body>
+</html>

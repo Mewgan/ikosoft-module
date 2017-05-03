@@ -3,6 +3,8 @@
 namespace Jet\Modules\Ikosoft\Controllers;
 
 use Jet\Models\Account;
+use Jet\Models\Profession;
+use Jet\Models\Theme;
 use Jet\Modules\Ikosoft\Models\IkosoftImport;
 use Jet\Modules\Ikosoft\Requests\IkosoftRequest;
 use Jet\Services\Recaptcha;
@@ -16,21 +18,39 @@ use JetFire\Framework\System\Mail;
 class FrontIkosoftController extends Controller
 {
 
+
+    /**
+     * @return array
+     */
+    public function theme()
+    {
+        $domain = (isset($this->app->data['setting']['domain'])) ? $this->app->data['setting']['domain'] : '';
+        $path = $domain . WEBROOT . 'site/';
+        $professions = Profession::select('name', 'slug')->where('slug', 'IN', ['barber', 'spa'])->get();
+        $themes = Theme::repo()->frontList(['barber', 'spa']);
+        return compact('themes', 'professions', 'path');
+    }
+
     /**
      * @param IkosoftRequest $request
+     * @param Recaptcha $captcha
+     * @param $theme
      * @return array|null
      */
-    public function registration(IkosoftRequest $request)
+    public function registration(IkosoftRequest $request, Recaptcha $captcha, $theme)
     {
-        $template = ROOT . '/src/Modules/Ikosoft/Views/Registration/index.html.twig';
+        $data = [
+            'captcha' => $captcha,
+            'theme' => Theme::repo()->getThumbnail($theme)
+        ];
         if ($request->has('uid')) {
             $data['uid'] = $request->get('uid');
             $data['path'] = $this->findInstancePath($this->app->data['setting']['imports']['ikosoft']['path'], $data['uid']);
             if (!is_null($data['path'])) {
-                return compact('template', 'data');
+                return $data;
             }
         }
-        return null;
+        return $this->notFound();
     }
 
     /**
@@ -67,7 +87,7 @@ class FrontIkosoftController extends Controller
                     if (is_file($values['_path'])) {
 
                         if (IkosoftImport::where('uid', $values['_uid'])->count() == 0) {
-                            exec('php jet import:ikosoft:data ' . $values['_path'] . ' -a --theme=' . $theme);
+                            exec('php jet import:ikosoft:data ' . $values['_path'] . ' -a --theme=' . $theme . ' --email=' . $values['account']['email'] . ' --society=' . $values['society']);
                             if (IkosoftImport::where('uid', $values['_uid'])->count() == 1) {
 
                                 $import = IkosoftImport::repo()->getImportAccount($values['_uid']);

@@ -47,7 +47,9 @@ class ImportController extends Controller
         'activate' => 0,
         'zip_password' => 'XfdghT@15_BrP4',
         'automatic_update' => true,
-        'theme' => null
+        'theme' => null,
+        'email' => null,
+        'society' => null,
     ];
     /**
      * @var array

@@ -1,50 +1,106 @@
-<div class="row">
-    <div class="col-md-12">
-        <div class="about-white-intro">
-            <form novalidate="novalidate" id="register_form" action="{{ path('ikosoft.registration.register', {'theme_id': theme.id}) }}" method="POST">
-                <div class="row pad-tb-20">
-                    <h2>2. Vos informations de connexion</h2>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <p>Choissir un mot de passe pour votre site</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <input type="password" placeholder="Choisissez un mot de passe *" name="account[password]" required class="form-control" id="password">
-                    </div>
-                    <div class="col-md-6">
-                        <input type="password" placeholder="Confirmez votre mot de passe *" name="account[confirm_pass]" required class="form-control" id="confirm_pass">
-                    </div>
-                </div>
-                <div class="row pad-tb-20">
-                    <div class="col-md-12">
-                        {{ captcha.html('recaptcha') }}
-                    </div>
-                </div>
-                <em>(*) Champs obligatoires</em>
-                <div class="row pad-tb-10">
-                    <div class="col-md-12">
-                        <p>En m'inscrivant, j'accepte les <a href="{{ path('public.page.cgu') }}" target="_blank">Conditions d'utilisation et la Charte de confidentialité</a> de Webio.</p>
-                    </div>
-                </div>
-                <input type="hidden" name="_uid" id="uid" value="{{ uid }}">
-                <input type="hidden" name="_path" id="path" value="{{ path }}">
-                <input type="hidden" name="_token" id="token" value="{{ token() }}">
-                <div class="row center-align pad-bottom-20">
-                    <button type="submit" name="submit" class="btn-round-bg btn-submit btn-medium">Valider</button>
-                    <button class="btn-round-bg btn-medium btn-loading" style="display:none;">Chargement ...</button>
-                </div>
-                <div id="response-message" class="alert" style="display: none;">
-                    <span></span>
-                </div>
-            </form>
+{% extends "default_layout.html.twig" %}
+{% import 'Macros/message.html.twig' as form %}
+
+{% block css %}
+    <style>
+        .blog-bg{
+            padding: 170px 0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+<!-- xxx Breadcrumns Wrap xxx -->
+<section class="fullscreen background parallax image breadcrumb-wrap blog-bg mb30" data-img-width="1600" data-img-height="1067" data-diff="100">
+    <div class="container">
+        <h1>Inscription</h1>
+    </div>
+</section>
+<!-- xxx Breadcrumns Wrap End xxx -->
+
+<div id="body-content register-section">
+    <div class="container mt20 mb30">
+
+        <div class="row">
+            <div class="col-md-12 center-align">
+                <h1>Démarrez gratuitement avec ce design.</h1>
+                <h3>Vous pouvez choisir un autre design à tout moment.</h3>
+            </div>
         </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="about-white-intro">
+                    <h2>1. Votre thème</h2>
+                    <img src="{{ asset(theme.thumbnail.path) }}" alt="{{ theme.thumbnail.alt }}">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="about-white-intro">
+                    <form novalidate="novalidate" id="register_form" action="{{ path('ikosoft.registration.register', {'theme_id': theme.id}) }}" method="POST">
+                        <div class="row pt20">
+                            <h2>2. Vos informations de connexion</h2>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="text" placeholder="Renseignez le nom de votre salon *" name="society" required class="form-control" id="society">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="email" placeholder="Renseignez un e-mail valide *" name="account[email]" required class="form-control" id="email">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <input type="password" placeholder="Choisissez un mot de passe *" name="account[password]" required class="form-control" id="password">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="password" placeholder="Confirmez votre mot de passe *" name="account[confirm_pass]" required class="form-control" id="confirm_pass">
+                            </div>
+                        </div>
+                        <div class="row pt20">
+                            <div class="col-md-12">
+                                {{ captcha.html('recaptcha') }}
+                            </div>
+                        </div>
+                        <em>(*) Champs obligatoires</em>
+                        <div class="row pt10">
+                            <div class="col-md-12">
+                                <p>En m'inscrivant, j'accepte les <a href="{{ path('public.page.cgu') }}" target="_blank">Conditions d'utilisation et la Charte de confidentialité</a> de Webio.</p>
+                            </div>
+                        </div>
+                        <input type="hidden" name="_uid" id="uid" value="{{ uid }}">
+                        <input type="hidden" name="_path" id="path" value="{{ path }}">
+                        <input type="hidden" name="_token" id="token" value="{{ token() }}">
+                        <div class="row center-align pad-bottom-20">
+                            <button type="submit" name="submit" class="btn-round-bg btn-submit btn-medium">Valider</button>
+                            <button class="btn-round-bg btn-medium btn-loading" style="display:none;">Chargement ...</button>
+                        </div>
+                        <div id="response-message" class="alert" style="display: none;">
+                            <span></span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt30">
+            <div class="col-md-12 center-align">
+                <a class="btn-round-bg btn-medium" href="{{ path('ikosoft.registration.theme') }}?{{ request().getServer().get('QUERY_STRING') | replace({('url=module/ikosoft/inscription/theme-'~theme.id~'&'): ''}) }}"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Retour au choix de thèmes</a>
+            </div>
+        </div>
+
     </div>
 </div>
 
+{% endblock %}
 
-{{ captcha.js() }}
-<script src="{{ asset('libs/jquery.validate/jquery.validate.min.js') }}"></script>
-<script src="{{ asset('register.js') }}"></script>
+{% block js %}
+    {{ captcha.js() }}
+    <script src="{{ asset('libs/jquery.validate/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('register.js') }}"></script>
+
+{% endblock %}

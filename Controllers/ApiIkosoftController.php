@@ -2,6 +2,7 @@
 
 namespace Jet\Modules\Ikosoft\Controllers;
 
+use Jet\Modules\Ikosoft\Models\IkosoftImport;
 use JetFire\Framework\System\Controller;
 
 /**
@@ -28,6 +29,17 @@ class ApiIkosoftController extends Controller
             }
         }
         return true;
+    }
+
+    /**
+     * @param $uid
+     * @return string
+     */
+    public function check($uid)
+    {
+        return (IkosoftImport::where('uid', $uid)->count() > 0)
+            ? json_encode(true)
+            : json_encode(false);
     }
 
 }

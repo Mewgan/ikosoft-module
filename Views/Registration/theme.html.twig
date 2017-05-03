@@ -1,0 +1,68 @@
+{% extends "default_layout.html.twig" %}
+{% import 'Macros/message.html.twig' as form %}
+
+{% block css %}
+    <style>
+        .blog-bg{
+            padding: 170px 0;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+
+    <!-- xxx Breadcrumns Wrap xxx -->
+    <section class="fullscreen background parallax image breadcrumb-wrap blog-bg" data-img-width="1600" data-img-height="1067" data-diff="100">
+        <div class="container">
+            <h1>Le site web idéal pour votre salon</h1>
+            <p>Choisissez une mise en page et personnalisez comme vous le souhaitez !</p>
+        </div>
+    </section><!-- xxx Breadcrumns Wrap End xxx -->
+
+    <!-- Main Bodycontent Start -->
+    <div id="body-content">
+        <div class="container">
+
+            <div id="js-filters-awesome-work" class="cbp-l-filters-work">
+                <div data-filter="*" class="cbp-filter-item-active cbp-filter-item">
+                    Tout
+                </div>
+                {% for profession in professions %}
+                <div data-filter=".{{ profession.slug }}" class="cbp-filter-item">
+                    {{ profession.name }} <div class="cbp-filter-counter"></div>
+                </div>
+                {% endfor %}
+            </div>
+            <div id="js-grid-awesome-work" class="cbp cbp-l-grid-work">
+                {% for theme in themes %}
+                    <div class="cbp-item {{ theme.profession.slug }}">
+                        <a href="{{ asset(theme.thumbnail.path) }}" class="cbp-caption cbp-lightbox" data-title="{{ theme.name }}">
+                            <div class="cbp-caption-defaultWrap">
+                                <img src="{{ asset(theme.thumbnail.path) }}" alt="{{ theme.thumbnail.alt }}">
+                            </div>
+                            <div class="cbp-caption-activeWrap"></div>
+                        </a>
+                        <a href="portfolio-single.html" class="cbp-l-grid-work-title">{{ theme.name }}</a>
+                        <div class="cbp-l-grid-work-desc">
+                            {% if theme.website.domain|slice(0, 4) == 'http' %}
+                                <a href="{{ theme.website.domain }}" target="_blank" class="btn-round-bg btn-medium"><i class="fa fa-eye"></i> Démo</a>
+                            {% else %}
+                                <a href="{{ path }}{{ theme.website.domain }}" target="_blank" class="btn-round-bg btn-medium"><i class="fa fa-eye"></i> Démo</a>
+                            {% endif %}
+                            <a href="{{ path('ikosoft.registration.index', {'theme_id' : theme.id}) }}?{{ request().getServer().get('QUERY_STRING') | replace({'url=module/ikosoft/themes&': ''}) }}" class="btn-round-bg btn-medium"><i class="fa fa-check"></i> Sélectionner</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+           {# <div id="js-loadMore-awesome-work" class="cbp-l-loadMore-button">
+                <a href="ajax-full-width/loadMore-3col.html" class="cbp-l-loadMore-link" rel="nofollow">
+                    <span class="cbp-l-loadMore-defaultText">LOAD MORE</span>
+                    <span class="cbp-l-loadMore-loadingText">LOADING...</span>
+                    <span class="cbp-l-loadMore-noMoreLoading">NO MORE WORKS</span>
+                </a>
+            </div>#}
+        </div>
+    </div>
+    
+{% endblock %}

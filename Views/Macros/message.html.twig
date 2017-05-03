@@ -1,0 +1,53 @@
+{% macro all_messages(response) %}
+    {% autoescape 'html' %}
+        {% if not response is empty %}
+            <div class="card-panel {% if response.status  == 'success' %}green lighten-3{% elseif response.status  == 'error' %}red lighten-3{% endif %} fade in">
+                {% if response.message is iterable %}
+                    {% for field in response.message %}
+                        {% for message in field %}
+                            <strong class="white-text">{{ message }}</strong><br/>
+                        {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    <strong>{{ response.message }}</strong>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endautoescape %}
+{% endmacro %}
+
+{% macro messages(response) %}
+    {% autoescape 'html' %}
+        {% set m = '' %}
+        {% if not response is empty %}
+            <div class="card-panel {% if response.status  == 'success' %}green lighten-3{% elseif response.status  == 'error' %}red lighten-3{% endif %} fade in">
+                {% if response.message is iterable %}
+                    {% for field in response.message %}
+                        {% for message in field %}
+                            {% if loop.first %}
+                                {% if m != message %}
+                                    {% set m = message %}
+                                    <strong class="white-text">{{ message }}</strong><br/>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endfor %}
+                {% else %}
+                    <strong class="white-text">{{ response.message }}</strong>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endautoescape %}
+{% endmacro %}
+
+{% macro error(field) %}
+    {% autoescape 'html' %}
+        {% if not field is empty %}
+            <div class="card-panel red lighten-3">
+                {% for message in field %}
+                    <strong class="white-text">{{ message }}</strong><br/>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endautoescape %}
+{% endmacro %}

@@ -1,0 +1,39 @@
+<!-- xxx Loader Start xxx -->
+{#<div id="pageloader">
+    <div class="loader-item">
+        <img src="{{ asset('site-loader.gif') }}" alt='loader' />
+        <div>loading...</div>
+    </div>
+</div>#}
+<!-- xxx End xxx -->
+
+<!-- xxx Header xxx -->
+<header>
+
+    <!-- xxx Logo And Navigation xxx -->
+    <div id="nav-wrap">
+        <div class="nav-bg">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div id="main-menu" class="menuzord">
+                            <a href="{{ path('') }}" class="menuzord-brand m10"><img height="70px" src="{{ asset('webzy-et-ikosoft.png') }}" alt="Logo Webzy et ikosoft"></a>
+                            <ul class="menuzord-menu m10">
+                                <li><a href="{{ path('public.page.theme') }}">S'inscrire</a></li>
+                                {% if session._admin_logged_ == true %}
+                                    <li>
+                                        <a href="{{ path('admin.home') }}">Admin</a>
+                                    </li>
+                                {% else %}
+                                    <li>
+                                        <a href="{{ path('admin.home') }}">Connexion</a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- xxx Logo and Navigation End xxx -->
+</header><!-- xxx Header End xxx -->
