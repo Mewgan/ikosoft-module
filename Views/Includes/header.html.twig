@@ -19,7 +19,6 @@
                         <div id="main-menu" class="menuzord">
                             <a href="{{ path('') }}" class="menuzord-brand m10"><img height="70px" src="{{ asset('webzy-et-ikosoft.png') }}" alt="Logo Webzy et ikosoft"></a>
                             <ul class="menuzord-menu m10">
-                                <li><a href="{{ path('public.page.theme') }}">S'inscrire</a></li>
                                 {% if session._admin_logged_ == true %}
                                     <li>
                                         <a href="{{ path('admin.home') }}">Admin</a>
