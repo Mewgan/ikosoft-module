@@ -15,7 +15,7 @@
     <section class="fullscreen background parallax image breadcrumb-wrap blog-bg" data-img-width="1600" data-img-height="1067" data-diff="100">
         <div class="container">
             <h1>Le site web idéal pour votre salon</h1>
-            <p>Choisissez un thème graphique qui vous ressemble</p>
+            <p>Choisissez le thème graphique qui vous ressemble</p>
         </div>
     </section><!-- xxx Breadcrumns Wrap End xxx -->
 
@@ -36,11 +36,14 @@
             <div id="js-grid-awesome-work" class="cbp cbp-l-grid-work">
                 {% for theme in themes %}
                     <div class="cbp-item {{ theme.profession.slug }}">
-                        <a href="{{ asset(theme.thumbnail.path) }}" class="cbp-caption cbp-lightbox" data-title="{{ theme.name }}">
+                        {% if theme.website.domain|slice(0, 4) == 'http' %}
+                            <a href="{{ theme.website.domain }}" target="_blank" class="cbp-caption" data-title="{{ theme.name }}">
+                        {% else %}
+                            <a href="{{ path }}{{ theme.website.domain }}" target="_blank" class="cbp-caption" data-title="{{ theme.name }}">
+                        {% endif %}
                             <div class="cbp-caption-defaultWrap">
                                 <img src="{{ asset(theme.thumbnail.path) }}" alt="{{ theme.thumbnail.alt }}">
                             </div>
-                            <div class="cbp-caption-activeWrap"></div>
                         </a>
                         <a href="portfolio-single.html" class="cbp-l-grid-work-title">{{ theme.name }}</a>
                         <div class="cbp-l-grid-work-desc">
@@ -53,6 +56,12 @@
                         </div>
                     </div>
                 {% endfor %}
+            </div>
+
+            <div class="row mt40 center-align">
+                <div class="col-md-12">
+                    <h3>Vous pouvez visualiser chaque page de chaque thème en cliquant sur "Démo".</h3>
+                </div>
             </div>
 
            {# <div id="js-loadMore-awesome-work" class="cbp-l-loadMore-button">

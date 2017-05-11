@@ -27,8 +27,12 @@ return [
 
     /* Api */
 
-    '/module/ikosoft/check/:uid' => [
-        'use' => 'ApiIkosoftController@check',
+    '/module/ikosoft/check-before-create/:uid' => [
+        'use' => 'ApiIkosoftController@checkBeforeCreate',
+    ],
+
+    '/module/ikosoft/check-before-update/:uid' => [
+        'use' => 'ApiIkosoftController@checkBeforeUpdate',
     ],
 
     '/module/ikosoft/cron' => [

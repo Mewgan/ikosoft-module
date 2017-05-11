@@ -22,7 +22,7 @@ class IkosoftRequest extends Request
             'account.email' => 'required|email',
             'account.confirm_pass' => 'required|noWhitespace',
             'account.password' => 'required|noWhitespace|same:account.confirm_pass|assign:crypt,password_hash',
-            'society' => 'required',
+            'society' => 'required|length:3,20',
             'captcha' => 'required',
             '_uid|_path|_token' => 'required',
             'token' => 'assign:' . md5(uniqid(rand(), true)),

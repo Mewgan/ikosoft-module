@@ -2,6 +2,7 @@
 
 namespace Jet\Modules\Ikosoft\Controllers;
 
+use Cocur\Slugify\Slugify;
 use Jet\Models\Account;
 use Jet\Models\Profession;
 use Jet\Models\Theme;
@@ -17,7 +18,6 @@ use JetFire\Framework\System\Mail;
  */
 class FrontIkosoftController extends Controller
 {
-
 
     /**
      * @return array
@@ -77,7 +77,7 @@ class FrontIkosoftController extends Controller
      * @param $theme
      * @return array
      */
-    public function register(IkosoftRequest $request, Mail $mail, Recaptcha $captcha, $theme)
+    public function register(IkosoftRequest $request, Mail $mail, Recaptcha $captcha, Slugify $slugify, $theme)
     {
         if ($request->method() == 'POST') {
             $response = $request->validate();
@@ -87,6 +87,9 @@ class FrontIkosoftController extends Controller
                     if (is_file($values['_path'])) {
 
                         if (IkosoftImport::where('uid', $values['_uid'])->count() == 0) {
+                            $slug = $slugify->slugify($values['society']);
+                            $sub_domains = isset($this->app->data['settings']['exclude_sub_domain']) ? $this->app->data['settings']['exclude_sub_domain']: [];
+                            if (in_array($slug, $sub_domains)) return ['status' => 'error', 'message' => 'Le nom de la société n\'est pas valide. Veuillez choisir un autre nom'];
                             exec('php jet import:ikosoft:data ' . $values['_path'] . ' -a --theme=' . $theme . ' --email=' . $values['account']['email'] . ' --society=' . $values['society']);
                             if (IkosoftImport::where('uid', $values['_uid'])->count() == 1) {
 

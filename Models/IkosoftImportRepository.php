@@ -93,7 +93,7 @@ class IkosoftImportRepository extends EntityRepository
             $query->orderBy('s.id', 'DESC');
         }
 
-        if(isset($params['active']) && isset($params['trial_days']) && $params['active'] == true){
+        if (isset($params['active']) && isset($params['trial_days']) && $params['active'] == true) {
             $date = new \DateTime($params['trial_days']);
             $now = new \DateTime();
             $query->andWhere('a.registered_at < :date')
@@ -216,6 +216,29 @@ class IkosoftImportRepository extends EntityRepository
             ->orderBy('w.id', 'DESC');
 
         return $query->getQuery()->getArrayResult();
+    }
+
+    /**
+     * @param $uid
+     * @return array
+     */
+    public function getWebsiteByUid($uid)
+    {
+        $query = IkosoftImport::queryBuilder();
+        $query->select('partial i.{id}')
+            ->addSelect('partial w.{id, state}')
+            ->addSelect('partial s.{id}')
+            ->addSelect('partial a.{id, state, expiration_date}')
+            ->from('Jet\Modules\Ikosoft\Models\IkosoftImport', 'i')
+            ->leftJoin('i.website', 'w')
+            ->leftJoin('w.society', 's')
+            ->leftJoin('s.account', 'a');
+
+        $query->where($query->expr()->eq('i.uid', ':uid'))
+            ->setParameter('uid', $uid);
+
+        $result = $query->getQuery()->getArrayResult();
+        return isset($result[0]) ? $result[0] : null;
     }
 
 

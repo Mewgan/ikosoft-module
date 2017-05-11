@@ -48,6 +48,8 @@ class LoadWebsite extends LoadFixture
         $slug = new Slugify();
         $data['domain'] = $slug->slugify($society['name']);
         $app = $this->import->getApp();
+        $sub_domains = isset($app->data['settings']['exclude_sub_domain']) ? $app->data['settings']['exclude_sub_domain']: [];
+        if (in_array($data['domain'], $sub_domains)) throw new \Exception('Le nom de la société n\'est pas valide. Veuillez choisir un autre nom');
         if ($app->data['setting']['sub_domain'] == true) {
             $domain = explode('://', $app->data['setting']['domain']);
             $data['domain'] = 'http://' . $data['domain'] . '.' . $domain[1];

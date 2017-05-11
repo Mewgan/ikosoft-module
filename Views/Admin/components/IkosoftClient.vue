@@ -25,7 +25,7 @@
                     <div class="col-md-12">
                         <h4>Liste des sites web</h4>
                         <div class="btn-group pull-right mb10 group-action">
-                            <button type="button" class="btn ink-reaction btn-default">Sélection</button>
+                            <button type="button" data-toggle="dropdown" class="btn ink-reaction btn-default">Sélection</button>
                             <button type="button" class="btn ink-reaction btn-primary dropdown-toggle"
                                     data-toggle="dropdown" aria-expanded="false"><i
                                     class="fa fa-caret-down"></i>
@@ -134,7 +134,7 @@
                     let website = (aData['website'].substring(0, 4) !== 'http')
                             ? this.system.domain + this.system.public_path + '/site/' + aData['website'] : aData['website'];
                     $('td:eq(4)', nRow).html('<a href="' + website + '" target="_blank">' + website + '</a>');
-                    $('td:eq(7)', nRow).html('<a class="btn btn-info" target="_blank" href="' + website + '"><i class="fa fa-eye" aria-hidden="true"></i></a>');
+                    $('td:eq(7)', nRow).html('<a title="Voir le site" class="btn btn-default" target="_blank" href="' + website + '"><i class="fa fa-eye" aria-hidden="true"></i></a>');
                 }
             },
             updateSelectedItems(items){
