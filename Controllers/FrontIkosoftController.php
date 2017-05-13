@@ -87,10 +87,13 @@ class FrontIkosoftController extends Controller
                     if (is_file($values['_path'])) {
 
                         if (IkosoftImport::where('uid', $values['_uid'])->count() == 0) {
+                            /* Check if valid society name */
                             $slug = $slugify->slugify($values['society']);
-                            $sub_domains = isset($this->app->data['settings']['exclude_sub_domain']) ? $this->app->data['settings']['exclude_sub_domain']: [];
-                            if (in_array($slug, $sub_domains)) return ['status' => 'error', 'message' => 'Le nom de la société n\'est pas valide. Veuillez choisir un autre nom'];
+                            $sub_domains = isset($this->app->data['app']['settings']['exclude_sub_domain']) ? $this->app->data['app']['settings']['exclude_sub_domain']: [];
+                            if (in_array($slug, $sub_domains)) return ['status' => 'error', 'message' => 'Le nom de la société n\'est pas valide. Veuillez choisir un autre nom.'];
+
                             exec('php jet import:ikosoft:data ' . $values['_path'] . ' -a --theme=' . $theme . ' --email=' . $values['account']['email'] . ' --society=' . $values['society']);
+
                             if (IkosoftImport::where('uid', $values['_uid'])->count() == 1) {
 
                                 $import = IkosoftImport::repo()->getImportAccount($values['_uid']);

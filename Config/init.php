@@ -3,6 +3,12 @@
 return [
 
     'app' => [
+        'Ikosoft' => [
+            'order' => 100,
+            'hook' => [
+                'left_sidebar' => true
+            ]
+        ],
         'blocks' => [
             'IkosoftModule' => [
                 'path' => 'src/Modules/Ikosoft/',
@@ -12,6 +18,9 @@ return [
         ],
         'fixtures' => [
             'src/Modules/Ikosoft/Fixtures/'
+        ],
+        'settings' => [
+            'ikosoft_trial_days' => '+1month'
         ]
     ]
 ];

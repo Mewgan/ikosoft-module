@@ -48,7 +48,7 @@ class LoadWebsite extends LoadFixture
         $slug = new Slugify();
         $data['domain'] = $slug->slugify($society['name']);
         $app = $this->import->getApp();
-        $sub_domains = isset($app->data['settings']['exclude_sub_domain']) ? $app->data['settings']['exclude_sub_domain']: [];
+        $sub_domains = isset($app->data['app']['settings']['exclude_sub_domain']) ? $app->data['app']['settings']['exclude_sub_domain']: [];
         if (in_array($data['domain'], $sub_domains)) throw new \Exception('Le nom de la société n\'est pas valide. Veuillez choisir un autre nom');
         if ($app->data['setting']['sub_domain'] == true) {
             $domain = explode('://', $app->data['setting']['domain']);
@@ -209,8 +209,8 @@ class LoadWebsite extends LoadFixture
             $account['registered_at'] = $account['updated_at'];
             $account['state'] = $this->import->params['activate'];
             $account['photo_id'] = $this->import->global_data['account_photo'];
-            if ($account['state'] == 1 && isset($app->data['app']['settings']['trial_days'])) {
-                $date = new \DateTime($app->data['app']['settings']['trial_days']);
+            if ($account['state'] == 1 && isset($app->data['app']['settings']['ikosoft_trial_days'])) {
+                $date = new \DateTime($app->data['app']['settings']['ikosoft_trial_days']);
                 $account['expiration_date'] = $date->format('Y-m-d H:i:s');
             }
         }

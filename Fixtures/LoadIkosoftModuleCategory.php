@@ -13,7 +13,6 @@ class LoadIkosoftModuleCategory extends AbstractFixture
         'name' => 'Ikosoft',
         'title' => 'Ikosoft',
         'slug' => 'ikosoft',
-        'nav' => true,
         'description' => 'Module dédié pour ikosoft',
         'icon' => 'fa fa-scissors',
         'author' => 'S.Sumugan',
