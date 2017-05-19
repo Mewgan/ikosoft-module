@@ -7,7 +7,14 @@ return [
             'order' => 100,
             'hook' => [
                 'left_sidebar' => true
-            ]
+            ],
+            'routes' => [
+                [
+                    'title' => 'Ikosoft',
+                    'name'=> 'module:ikosoft',
+                ]
+            ],
+            'trial_days' => '+1month'
         ],
         'blocks' => [
             'IkosoftModule' => [
@@ -18,9 +25,6 @@ return [
         ],
         'fixtures' => [
             'src/Modules/Ikosoft/Fixtures/'
-        ],
-        'settings' => [
-            'ikosoft_trial_days' => '+1month'
         ]
     ]
 ];

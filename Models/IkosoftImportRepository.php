@@ -100,7 +100,7 @@ class IkosoftImportRepository extends EntityRepository
                 ->setParameter('date', $now->add($date->diff($now)))
                 ->andWhere('w.state = 1')
                 ->andWhere('a.state = 1')
-                ->andWhere('a.expiration_date > CURRENT_DATE()');
+                ->andWhere('w.expiration_date > CURRENT_DATE()');
         }
 
         return $query;
@@ -226,9 +226,9 @@ class IkosoftImportRepository extends EntityRepository
     {
         $query = IkosoftImport::queryBuilder();
         $query->select('partial i.{id}')
-            ->addSelect('partial w.{id, state}')
+            ->addSelect('partial w.{id, state, expiration_date}')
             ->addSelect('partial s.{id}')
-            ->addSelect('partial a.{id, state, expiration_date}')
+            ->addSelect('partial a.{id, state}')
             ->from('Jet\Modules\Ikosoft\Models\IkosoftImport', 'i')
             ->leftJoin('i.website', 'w')
             ->leftJoin('w.society', 's')

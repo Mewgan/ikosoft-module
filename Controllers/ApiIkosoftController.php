@@ -51,7 +51,7 @@ class ApiIkosoftController extends Controller
         $import = IkosoftImport::getWebsiteByUid($uid);
         if(!is_null($import) && isset($import['website']['society']['account'])){
             if($import['website']['state'] == 1 && $import['website']['society']['account']['state'] == 1){
-                if($import['website']['society']['account']['expiration_date'] > new \DateTime())
+                if($import['website']['expiration_date'] > new \DateTime())
                     return json_encode(true);
             }
         }

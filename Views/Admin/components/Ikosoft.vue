@@ -124,9 +124,6 @@
                 if(response.data.resource !== undefined)
                     this.importer = response.data.resource;
             })
-        },
-        mounted(){
-
         }
     }
 </script>

@@ -13,8 +13,14 @@ class LoadWebsite extends LoadFixture
 {
 
     /**
+     * @var array
+     */
+    private $modules = ['single-post','list-post','navigation','price','team', 'ikosoft','grid-editor'];
+
+    /**
      * @param $entry
      * @return array|bool
+     * @throws \Exception
      */
     public function load($entry)
     {
@@ -55,10 +61,10 @@ class LoadWebsite extends LoadFixture
             $data['domain'] = 'http://' . $data['domain'] . '.' . $domain[1];
         }
 
-        $this->loadAccountData($app, $account);
+        $this->loadAccountData($account);
         $this->loadSocietyData($society);
         $this->loadAddressData($address);
-        $this->loadWebsiteData($data);
+        $this->loadWebsiteData($app, $data);
 
         if ($this->import->params['action'] == 'create') {
             $this->import->getWebsites($this->import->data['website_id']);
@@ -191,11 +197,10 @@ class LoadWebsite extends LoadFixture
       }*/
 
     /**
-     * @param App $app
      * @param array $account
      * @throws \Exception
      */
-    private function loadAccountData($app, $account = [])
+    private function loadAccountData($account = [])
     {
         if (!isset($account['email']) || empty($account['email']))
             throw new \Exception('L\'e-mail est vide');
@@ -209,10 +214,6 @@ class LoadWebsite extends LoadFixture
             $account['registered_at'] = $account['updated_at'];
             $account['state'] = $this->import->params['activate'];
             $account['photo_id'] = $this->import->global_data['account_photo'];
-            if ($account['state'] == 1 && isset($app->data['app']['settings']['ikosoft_trial_days'])) {
-                $date = new \DateTime($app->data['app']['settings']['ikosoft_trial_days']);
-                $account['expiration_date'] = $date->format('Y-m-d H:i:s');
-            }
         }
 
         $keys = array_keys($account);
@@ -283,10 +284,11 @@ class LoadWebsite extends LoadFixture
     }
 
     /**
+     * @param $app
      * @param array $data
      * @throws \Exception
      */
-    private function loadWebsiteData($data = [])
+    private function loadWebsiteData($app, $data = [])
     {
         $date = new \DateTime();
         $website = [];
@@ -322,8 +324,17 @@ class LoadWebsite extends LoadFixture
                 $theme = (is_null($this->import->params['theme']))
                     ? $themes[rand(0, count($themes) - 1)] : $themes[0];
 
+                foreach ($this->modules as $m){
+                    if(isset($this->import->global_data['modules'][$m]))
+                        $this->import->data['website_modules'][] = $this->import->global_data['modules'][$m];
+                }
+
                 $this->import->data['website_modules'] = json_encode(array_merge(json_decode($theme['w_modules'], true), [$this->import->global_data['modules']['ikosoft']]));
                 $this->import->data['theme'] = $theme;
+
+                $date = (isset($app->data['app']['Ikosoft']['trial_days']))
+                    ? new \DateTime($app->data['app']['Ikosoft']['trial_days'])
+                    : new \DateTime('+1 month');
 
                 $website = [
                     'society_id' => $this->import->data['society_id'],
@@ -333,6 +344,7 @@ class LoadWebsite extends LoadFixture
                     'render_system' => $theme['w_render_system'],
                     'data' => $theme['w_data'],
                     'domain' => $data['domain'],
+                    'expiration_date' => $date->format('Y-m-d H:i:s'),
                     'state' => $this->import->params['activate'],
                     'created_at' => $date->format('Y-m-d H:i:s'),
                     'updated_at' => $date->format('Y-m-d H:i:s'),

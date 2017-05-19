@@ -143,7 +143,7 @@ class AdminIkosoftController extends AdminController
         header("Content-Type: text/plain");
         header("Content-disposition: attachment; filename=export.csv");
 
-        $all = IkosoftImport::repo()->listAll(1, -1, ['active' => true, 'trial_days' => $this->app->data['app']['settings']['ikosoft_trial_days']]);
+        $all = IkosoftImport::repo()->listAll(1, -1, ['active' => true, 'trial_days' => $this->app->data['app']['Ikosoft']['trial_days']]);
         $out = fopen('php://output', 'w');
 
         foreach ($all['data'] as $fields) {
