@@ -158,7 +158,9 @@ class ImportController extends Controller
             if(substr($file, -4) === ".zip") {
                 $response = $this->extractZip($file, $dir . $instance['filename']);
                 if ($response !== true) return $response;
-                $xml = $dir . $instance['filename'] . '/' . $instance['filename'] . '.xini';
+                $files = glob_recursive($dir . $instance['filename'] . '/' . '*.xini', GLOB_BRACE);
+                if(!isset($files[0])) ['status' => 'error', 'message' => 'Impossible de trouver le fichier d\'import : "' . $instance['filename'] . '.xini"'];
+                $xml = $files[0];
             }
 
             if (is_file($xml)) {

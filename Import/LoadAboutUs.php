@@ -62,7 +62,7 @@ class LoadAboutUs extends LoadFixture
                 'title' => $post['title'],
                 'slug' => $post['slug'],
                 'website_id' => $this->import->data['website_id'],
-                'description' => substr($this->import->global_data['information']['Comment'], 0 , 100),
+                'description' => substr($this->import->global_data['information']['Comment'], 0 , 300),
                 'content' => $this->import->global_data['information']['Comment'],
                 'created_at' => $date->format('Y-m-d H:i:s'),
                 'updated_at' => $date->format('Y-m-d H:i:s'),

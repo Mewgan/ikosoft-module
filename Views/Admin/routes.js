@@ -1,6 +1,8 @@
 export var global = {
     provider: 'ikosoft',
+    dashboard: '/ikosoft/dashboard',
     icon: 'fa fa-scissors',
+    permission: 3,
     routes: [
         {
             title: 'Tableau de bord',
