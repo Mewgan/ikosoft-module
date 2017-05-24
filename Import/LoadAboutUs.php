@@ -14,7 +14,7 @@ class LoadAboutUs extends LoadFixture
      */
     public function load()
     {
-        if ($this->hasModule('single-post')) {
+        if ($this->hasModule('post')) {
             $post = $this->getPost();
             if(isset($post['id'])){
                 ($post['website_id'] == $this->import->data['website_id'])

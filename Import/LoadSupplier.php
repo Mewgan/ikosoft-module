@@ -38,7 +38,7 @@ class LoadSupplier extends LoadFixture
      */
     private function loadSupplierData($suppliers = [])
     {
-        if ($this->hasModule('single-post')) {
+        if ($this->hasModule('post')) {
             $suppliers_in_db = $this->getSuppliersFromDb();
             $suppliers = $this->deleteUnusedSuppliers($suppliers_in_db, $suppliers);
             if (!empty($suppliers)) $this->createSuppliers($suppliers);

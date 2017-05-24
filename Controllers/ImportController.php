@@ -4,6 +4,7 @@ namespace Jet\Modules\Ikosoft\Controllers;
 
 use Jet\Models\Media;
 use Jet\Models\Module;
+use Jet\Models\ModuleCategory;
 use Jet\Models\Status;
 use Jet\Modules\Post\Models\PostCategory;
 use JetFire\Db\Model;
@@ -134,7 +135,7 @@ class ImportController extends Controller
         if (!is_null($media)) $this->global_data['account_photo'] = $media['id'];
         $status = Status::select('id')->where('role', 'user')->get(true);
         if (!is_null($status)) $this->global_data['account_status'] = $status['id'];
-        $modules = Module::select('id', 'slug')->get();
+        $modules = ModuleCategory::select('id', 'slug')->get();
         $this->global_data['modules'] = [];
         foreach ($modules as $module) $this->global_data['modules'][$module['slug']] = $module['id'];
 

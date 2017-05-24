@@ -6,6 +6,7 @@ export const ikosoft_api = {
     export_users: ADMIN_DOMAIN + '/module/ikosoft/export-users/',
     get_last: ADMIN_DOMAIN + '/module/ikosoft/get-last/',
     update_state: ADMIN_DOMAIN + '/module/ikosoft/update-state/',
-    update: ADMIN_DOMAIN + '/module/ikosoft/update/'
+    update: ADMIN_DOMAIN + '/module/ikosoft/update/',
+    get_trial_days: ADMIN_DOMAIN + '/module/ikosoft/get-trial-days/'
 };
 
