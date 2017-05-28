@@ -2,6 +2,7 @@ export var global = {
     provider: 'ikosoft',
     dashboard: '/ikosoft/dashboard',
     icon: 'fa fa-scissors',
+    nav_id: 'ikosoft',
     permission: 3,
     routes: [
         {

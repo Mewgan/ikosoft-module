@@ -88,7 +88,7 @@
 
         <div class="row mt30">
             <div class="col-md-12 center-align">
-                <a class="btn-round-bg btn-medium" href="{{ path('ikosoft.registration.theme') }}?{{ request().getServer().get('QUERY_STRING') | replace({('url=module/ikosoft/inscription/theme-'~theme.id~'&'): ''}) }}"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Retour au choix de thèmes</a>
+                <a class="btn-round-bg btn-medium" href="{{ path('ikosoft.registration.theme') }}?uid={{ get('uid') }}"><i class="fa fa-arrow-circle-left" aria-hidden="true"></i> Retour au choix de thèmes</a>
             </div>
         </div>
 
