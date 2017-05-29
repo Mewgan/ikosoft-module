@@ -10,7 +10,12 @@ return [
         'template' => '/Registration/theme'
     ],
 
-    '/module/ikosoft/inscription/theme-:theme_id' => [
+    '/module/ikosoft/preview'	=> [
+        'use' => 'preview_layout',
+        'name' => 'ikosoft.preview',
+    ],
+
+    '/module/ikosoft/registration/theme-:theme_id' => [
         'use' => 'FrontIkosoftController@registration',
         'name' => 'ikosoft.registration.index',
         'arguments' => ['theme_id' => '[0-9]*'],
