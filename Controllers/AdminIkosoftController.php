@@ -135,25 +135,13 @@ class AdminIkosoftController extends AdminController
     }
 
     /**
-     * @return string
-     */
-    public function getTrialDays()
-    {
-        $trial_days = isset($this->app->data['app']['settings']['trial_days'])
-            ? new \DateTime($this->app->data['app']['settings']['trial_days'])
-            : new \DateTime('+1month');
-        $today = new \DateTime();
-        return ['resource' => $today->diff($trial_days)];
-    }
-
-    /**
      *
      */
     public function exportUsers()
     {
-
+        $date = new \DateTime();
         header("Content-Type: text/plain");
-        header("Content-disposition: attachment; filename=export.csv");
+        header("Content-disposition: attachment; filename=export{$date->format('dmyHis')}.csv");
 
         $all = IkosoftImport::repo()->listAll(1, -1, ['active' => true, 'trial_days' => $this->app->data['app']['Ikosoft']['trial_days']]);
         $out = fopen('php://output', 'w');

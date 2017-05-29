@@ -35,7 +35,7 @@
             </div>
             <div id="js-grid-awesome-work" class="cbp cbp-l-grid-work">
                 {% for theme in themes %}
-                    <div class="cbp-item {{ theme.profession.slug }}">
+                    <div class="cbp-item {% for profession in theme.professions %}{{ profession.slug }} {% endfor %}">
                         {% if theme.website.domain|slice(0, 4) == 'http' %}
                             <a href="{{ theme.website.domain }}" target="_blank" class="cbp-caption" data-title="{{ theme.name }}">
                         {% else %}

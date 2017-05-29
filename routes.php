@@ -46,13 +46,15 @@ return [
     '{subdomain}.{host}/module/ikosoft/*' => [
         'use' => 'AdminIkosoftController@{method}',
         'ajax' => true,
-        'subdomain' => 'admin'
+        'subdomain' => 'admin',
+        'middleware' => 'admin'
     ],
 
     /* dev */
     '/admin/module/ikosoft/*' => [
         'use' => 'AdminIkosoftController@{method}',
-        'ajax' => true
+        'ajax' => true,
+        'middleware' => 'admin'
     ],
 
 ];

@@ -75,10 +75,7 @@
                 api: ikosoft_api.all,
                 websites: [],
                 selected_websites: [],
-                reload_datatable: false,
-                trial_days: {
-                    d: 30
-                }
+                reload_datatable: false
             }
         },
         computed: {
@@ -126,13 +123,16 @@
                 if (aData['website'] == null) {
                     $('td:eq(4)', nRow).html('Pas de site web');
                 } else {
-                    if (aData['state'] == '1') {
-                        if(total_days <= this.trial_days.d)
+                    switch (aData['state']){
+                        case -1:
                             $('td:eq(5)', nRow).html(`<i class="fa fa-clock-o text-warning" aria-hidden="true"> Période d'éssai</i>`);
-                        else
+                            break;
+                        case 1:
                             $('td:eq(5)', nRow).html(`<i class="fa fa-check text-success" aria-hidden="true"> Actif</i>`);
-                    } else {
-                        $('td:eq(5)', nRow).html(`<i class="fa fa-times text-danger" aria-hidden="true"> Inactif</i>`);
+                            break;
+                        case 0:
+                            $('td:eq(5)', nRow).html(`<i class="fa fa-times text-danger" aria-hidden="true"> Inactif</i>`);
+                            break;
                     }
                     let website = (aData['website'].substring(0, 4) !== 'http')
                             ? this.system.domain + this.system.public_path + '/site/' + aData['website'] : aData['website'];
@@ -143,11 +143,6 @@
             updateSelectedItems(items){
                 this.selected_websites = items;
             }
-        },
-        created(){
-            this.read({api: ikosoft_api.get_trial_days}).then((response) => {
-                if(response.data.resource !== undefined) this.trial_days = response.data.resource
-            })
         }
     }
 </script>

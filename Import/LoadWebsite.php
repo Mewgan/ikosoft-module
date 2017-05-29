@@ -345,7 +345,7 @@ class LoadWebsite extends LoadFixture
                     'data' => $theme['w_data'],
                     'domain' => $data['domain'],
                     'expiration_date' => $date->format('Y-m-d H:i:s'),
-                    'state' => $this->import->params['activate'],
+                    'state' => -1,
                     'created_at' => $date->format('Y-m-d H:i:s'),
                     'updated_at' => $date->format('Y-m-d H:i:s'),
                 ];
