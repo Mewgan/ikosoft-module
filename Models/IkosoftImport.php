@@ -41,11 +41,11 @@ class IkosoftImport extends Model implements \JsonSerializable
     /**
      * @Column(type="datetime")
      */
-    protected $created_at;
+    public $created_at;
     /**
      * @Column(type="datetime")
      */
-    protected $updated_at;
+    public $updated_at;
 
     /**
      * @return mixed
