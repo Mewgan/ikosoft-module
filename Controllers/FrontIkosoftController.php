@@ -104,11 +104,9 @@ class FrontIkosoftController extends Controller
                                         $full_url = (substr($import['website']['domain'], 0, 4) === 'http')
                                             ? $import['website']['domain']
                                             : rtrim($this->app->data['setting']['domain'], '/') . '/site/' . $import['website']['domain'];
-                                        $setting = $this->app->data['setting'];
                                         $content = $this->render('Mail/account_created', [
                                             'full_url' => $full_url,
-                                            'account' => $import['website']['society']['account'],
-                                            'setting' => $setting
+                                            'account' => $import['website']['society']['account']
                                         ]);
                                         return (!$mail->sendTo($import['website']['society']['account']['email'], 'Confirmation d\'inscription', $content))
                                             ? ['status' => 'error', 'message' => 'Erreur lors de l\'envoie du mail']

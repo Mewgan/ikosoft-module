@@ -126,7 +126,7 @@
                 </tr>
                 <tr>
                     <td align="center">
-                        <img src="{{ asset('webzy-et-ikosoft.png', true) }}" width="160" height="85" style="width: 160px;height: 85px;" title="Logo webzy" alt="Logo webzy"/>
+                        <img src="{{ asset('webzy-et-ikosoft.png', true) }}" width="160" height="85" style="width: 160px;height: 85px;" title="Logo {{ _data.setting.name }} et ikosoft" alt="Logo {{ _data.setting.name }} et ikosoft"/>
                     </td>
                 </tr>
                 <tr>
@@ -166,11 +166,11 @@
                 </tr>
                 <tr>
                     <td align="center">
-                        <img src="{{ asset('webzy-et-ikosoft.png', true) }}" width="160" height="85" style="width: 160px;height: 85px;" title="Logo webzy et ikosoft" alt="Logo webzy et ikosoft"/>
+                        <img src="{{ asset('webzy-et-ikosoft.png', true) }}" width="160" height="85" style="width: 160px;height: 85px;" title="Logo {{ _data.setting.name }} et ikosoft" alt="Logo {{ _data.setting.name }} et ikosoft"/>
                     </td>
                 </tr>
                 <tr>
-                    <td align="center"><p style="color: #282828;">{{ setting.params.address.road }}, {{ setting.params.address.postal_code }} {{ setting.params.address.city }}</p></td>
+                    <td align="center"><p style="color: #282828;">{{ _data.setting.params.address.road }}, {{ _data.setting.params.address.postal_code }} {{ _data.setting.params.address.city }}</p></td>
                 </tr>
                 </tbody>
             </table>
@@ -182,9 +182,9 @@
                 <tbody>
                 <tr>
                     <td align="center">
-                        <a href="{{ setting.params.social.facebook }}"><img width="30" height="30" style="width: 30px;vertical-align: middle;" src="{{ asset('facebook.png', true) }}" alt="facebook"/></a>
-                        <a href="{{ setting.params.social.twitter }}"><img width="30" height="30" style="width: 30px;vertical-align: middle;" src="{{ asset('twitter.png', true) }}" alt="twitter"/></a>
-                        <a href="{{ setting.params.social.instagram }}"><img width="30" height="30" style="width: 30px;vertical-align: middle;" src="{{ asset('instagram.png', true) }}" alt="instagram"/></a>
+                        <a href="{{ _data.setting.params.social.facebook }}"><img width="30" height="30" style="width: 30px;vertical-align: middle;" src="{{ asset('facebook.png', true) }}" alt="facebook"/></a>
+                        <a href="{{ _data.setting.params.social.twitter }}"><img width="30" height="30" style="width: 30px;vertical-align: middle;" src="{{ asset('twitter.png', true) }}" alt="twitter"/></a>
+                        <a href="{{ _data.setting.params.social.instagram }}"><img width="30" height="30" style="width: 30px;vertical-align: middle;" src="{{ asset('instagram.png', true) }}" alt="instagram"/></a>
                     </td>
                 </tr>
                 </tbody>
