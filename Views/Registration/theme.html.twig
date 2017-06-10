@@ -6,6 +6,9 @@
         .blog-bg{
             padding: 170px 0;
         }
+        .image.breadcrumb-wrap{
+            background-image:url({{ asset('bg1.jpg') }});
+        }
     </style>
 {% endblock %}
 
@@ -35,24 +38,21 @@
             </div>
             <div id="js-grid-awesome-work" class="cbp cbp-l-grid-work">
                 {% for theme in themes %}
+                    {% if theme.website.domain|slice(0, 4) == 'http' %}
+                        {% set theme_path = theme.website.domain %}
+                    {% else %}
+                        {% set theme_path = path ~ theme.website.domain %}
+                    {% endif %}
                     <div class="cbp-item {% for profession in theme.professions %}{{ profession.slug }} {% endfor %}">
-                        {% if theme.website.domain|slice(0, 4) == 'http' %}
-                            <a href="{{ theme.website.domain }}" target="_blank" class="cbp-caption" data-title="{{ theme.name }}">
-                        {% else %}
-                            <a href="{{ path }}{{ theme.website.domain }}" target="_blank" class="cbp-caption" data-title="{{ theme.name }}">
-                        {% endif %}
+                        <a href="{{ path('ikosoft.preview') }}?template_id={{ theme.id }}&template_path={{ theme_path }}&uid={{ get('uid') }}" target="_blank" class="cbp-caption" data-title="{{ theme.name }}">
                             <div class="cbp-caption-defaultWrap">
                                 <img src="{{ asset(theme.thumbnail.path) }}" alt="{{ theme.thumbnail.alt }}">
                             </div>
                         </a>
-                        <a href="portfolio-single.html" class="cbp-l-grid-work-title">{{ theme.name }}</a>
+                        <a href="{{ path('ikosoft.preview') }}?template_id={{ theme.id }}&template_path={{ theme_path }}&uid={{ get('uid') }}" class="cbp-l-grid-work-title">{{ theme.name }}</a>
                         <div class="cbp-l-grid-work-desc">
-                            {% if theme.website.domain|slice(0, 4) == 'http' %}
-                                <a href="{{ theme.website.domain }}" target="_blank" class="btn-round-bg btn-medium"><i class="fa fa-eye"></i> Démo</a>
-                            {% else %}
-                                <a href="{{ path }}{{ theme.website.domain }}" target="_blank" class="btn-round-bg btn-medium"><i class="fa fa-eye"></i> Démo</a>
-                            {% endif %}
-                            <a href="{{ path('ikosoft.registration.index', {'theme_id' : theme.id}) }}?{{ request().getServer().get('QUERY_STRING') | replace({'url=module/ikosoft/themes&': ''}) }}" class="btn-round-bg btn-medium"><i class="fa fa-check"></i> Sélectionner</a>
+                            <a href="{{ path('ikosoft.preview') }}?template_id={{ theme.id }}&template_path={{ theme_path }}&uid={{ get('uid') }}" target="_blank" class="btn-round-bg btn-medium"><i class="fa fa-eye"></i> Démo</a>
+                            <a href="{{ path('ikosoft.registration.index', {'theme_id' : theme.id}) }}?uid={{ get('uid') }}" class="btn-round-bg btn-medium"><i class="fa fa-check"></i> Sélectionner</a>
                         </div>
                     </div>
                 {% endfor %}
