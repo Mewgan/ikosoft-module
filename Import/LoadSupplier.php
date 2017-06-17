@@ -11,6 +11,8 @@ use Cocur\Slugify\Slugify;
 class LoadSupplier extends LoadFixture
 {
 
+    private $category = null;
+
     /**
      * @param $entry
      * @return array|bool
@@ -39,9 +41,18 @@ class LoadSupplier extends LoadFixture
     private function loadSupplierData($suppliers = [])
     {
         if ($this->hasModule('post')) {
-            $suppliers_in_db = $this->getSuppliersFromDb();
-            $suppliers = $this->deleteUnusedSuppliers($suppliers_in_db, $suppliers);
-            if (!empty($suppliers)) $this->createSuppliers($suppliers);
+            $req = $this->import->pdo->prepare('SELECT c.id
+                FROM ' . $this->import->db['prefix'] . 'post_categories c
+                WHERE c.slug = :slug
+                AND c.website_id IN (' . implode(',', $this->import->data['websites']) . ')
+            ');
+            $req->execute(['slug' => 'partenaire']);
+            $this->category = $req->fetch();
+            if(isset($this->category['id'])) {
+                $suppliers_in_db = $this->getSuppliersFromDb();
+                $suppliers = $this->deleteUnusedSuppliers($suppliers_in_db, $suppliers);
+                if (!empty($suppliers)) $this->createSuppliers($suppliers);
+            }
         }
         return true;
     }
@@ -58,7 +69,7 @@ class LoadSupplier extends LoadFixture
             WHERE c.id = :id
             AND p.website_id IN (' . implode(',', $this->import->data['websites']) . ')
         ');
-        $req->execute(['id' => $this->import->global_data['supplier_category']]);
+        $req->execute(['id' => $this->category['id']]);
         return $req->fetchAll();
     }
 
@@ -140,7 +151,7 @@ class LoadSupplier extends LoadFixture
                 for ($i = 0; $i < $count; ++$i) $ids[] = $id + $i;
                 if (!empty($ids)) {
                     $sql = '';
-                    foreach ($ids as $id) $sql .= '(' . $id . ',' . $this->import->global_data['supplier_category'] . '),';
+                    foreach ($ids as $id) $sql .= '(' . $id . ',' . $this->category['id'] . '),';
                     $sql = rtrim($sql, ',');
 
                     $req = $this->import->pdo->prepare('INSERT INTO ' . $this->import->db['prefix'] . 'posts_categories (post_id, postcategory_id) VALUES ' . $sql);

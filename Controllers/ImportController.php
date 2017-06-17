@@ -138,9 +138,6 @@ class ImportController extends Controller
         $modules = ModuleCategory::select('id', 'slug')->get();
         $this->global_data['modules'] = [];
         foreach ($modules as $module) $this->global_data['modules'][$module['slug']] = $module['id'];
-
-        $supplier_category = PostCategory::select('id')->where('slug', 'partenaire')->get(true);
-        if (!is_null($supplier_category)) $this->global_data['supplier_category'] = $supplier_category['id'];
     }
 
     /**

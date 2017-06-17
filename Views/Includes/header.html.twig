@@ -20,11 +20,11 @@
                             <a href="#" class="menuzord-brand m10"><img height="70px" src="{{ asset('webzy-et-ikosoft.png') }}" alt="Logo Webzy et ikosoft"></a>
                             <ul class="menuzord-menu m10">
                                 {% if session._admin_logged_ == true %}
-                                    <li>
+                                    <li class="pull-right">
                                         <a href="{{ path('admin.home') }}">Admin</a>
                                     </li>
                                 {% else %}
-                                    <li>
+                                    <li class="pull-right">
                                         <a href="{{ path('admin.home') }}">Connexion</a>
                                     </li>
                                 {% endif %}
