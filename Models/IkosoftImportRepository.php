@@ -29,7 +29,7 @@ class IkosoftImportRepository extends EntityRepository
         $query = IkosoftImport::queryBuilder();
 
         /* Query */
-        $query->select(['w.id AS id', 's.name as society', 'concat(a.first_name, \' \', a.last_name) as full_name', 'a.email as email', 'a.registered_at as registered_at', 'w.domain as website', 'w.state as state'])
+        $query->select(['w.id AS id', 's.name as society', 'concat(a.first_name, \' \', a.last_name) as full_name', 'a.email as email', 'a.registered_at as registered_at', 'w.domain as website', 'w.state as state', 'w.expiration_date as expiration_date'])
             ->from('Jet\Modules\Ikosoft\Models\IkosoftImport', 'i')
             ->leftJoin('i.website', 'w')
             ->leftJoin('w.society', 's')
@@ -84,7 +84,7 @@ class IkosoftImportRepository extends EntityRepository
 
         /* Order params */
         if (!empty($params['order'])) {
-            $columns = ['w.id', 's.name', 'a.first_name', 'a.email', 'w.domain', 'w.state', 'a.registered_at'];
+            $columns = ['w.id', 's.name', 'a.first_name', 'a.email', 'a.registered_at', 'w.domain', 'w.state', 'w.expiration_date'];
             foreach ($params['order'] as $order) {
                 if (isset($columns[$order['column']]))
                     $query->addOrderBy($columns[$order['column']], strtoupper($order['dir']));
@@ -93,13 +93,11 @@ class IkosoftImportRepository extends EntityRepository
             $query->orderBy('s.id', 'DESC');
         }
 
-        if (isset($params['active']) && isset($params['trial_days']) && $params['active'] == true) {
-            $date = new \DateTime($params['trial_days']);
-            $now = new \DateTime();
-            $query->andWhere('a.registered_at < :date')
-                ->setParameter('date', $now->add($date->diff($now)))
-                ->andWhere('w.state = 1')
-                ->andWhere('a.state = 1')
+        if (isset($params['active']) && $params['active'] == true) {
+            $query->andWhere('w.state = :website_state')
+                ->setParameter('website_state', 1)
+                ->andWhere('a.state = :account_state')
+                ->setParameter('account_state', 1)
                 ->andWhere('w.expiration_date > CURRENT_DATE()');
         }
 
@@ -169,7 +167,7 @@ class IkosoftImportRepository extends EntityRepository
         $query = Theme::queryBuilder()
             ->select('COUNT(t)')
             ->from('Jet\Models\Theme', 't')
-            ->leftJoin('t.profession', 'p');
+            ->leftJoin('t.professions', 'p');
 
         $query->where($query->expr()->eq('t.state', ':state'))
             ->andWhere($query->expr()->in('p.slug', ':professions'))

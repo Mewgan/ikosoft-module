@@ -47,7 +47,7 @@
                     <div class="card-head style-primary">
                         <header>Choisir les données à importer</header>
                         <div class="tools">
-                            <a @click="updateImport()" class="btn btn-default"><i class="fa fa-save"></i> Enregistrer</a>
+                            <a @click="updateImport()" class="btn btn-default-bright"><i class="fa fa-save"></i> Enregistrer</a>
                         </div>
                     </div><!--end .card-head -->
                     <div class="card-body">

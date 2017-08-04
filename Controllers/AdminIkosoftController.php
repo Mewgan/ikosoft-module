@@ -2,11 +2,12 @@
 
 namespace Jet\Modules\Ikosoft\Controllers;
 
-
 use Jet\AdminBlock\Controllers\AdminController;
 use Jet\Models\ModuleCategory;
 use Jet\Modules\Ikosoft\Models\IkosoftImport;
 use JetFire\Framework\System\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminIkosoftController extends AdminController
 {
@@ -135,22 +136,35 @@ class AdminIkosoftController extends AdminController
     }
 
     /**
-     *
+     * @description export all active website into csv
      */
     public function exportUsers()
     {
+        $all = IkosoftImport::repo()->listAll(1, -1, ['active' => true]);
+        $response = new StreamedResponse();
+        $response->setCallback(function() use($all) {
+            $out = fopen('php://output', 'w+');
+            $cols = ['id' => 'Identifiant unique', 'society' => 'Société', 'full_name' => 'Client', 'email' => 'E-mail', 'registered_at' => 'Date de création', 'website' => 'Site web', 'expiration_date' => 'Date d\'expiration'];
+            fputcsv($out, $cols, ';');
+            foreach ($all['data'] as $fields) {
+                $fields['registered_at'] = $fields['registered_at']->format('d/m/Y à H:i:s');
+                $fields['expiration_date'] = $fields['expiration_date']->format('d/m/Y à H:i:s');
+                foreach ($fields as $key => $field) if(!isset($cols[$key])) unset($fields[$key]);
+                fputcsv($out, $fields, ';');
+            }
+
+            fclose($out);
+        });
+
+        $response->setStatusCode(200);
         $date = new \DateTime();
-        header("Content-Type: text/plain");
-        header("Content-disposition: attachment; filename=export{$date->format('dmyHis')}.csv");
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+        $disposition = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            "export{$date->format('dmyHis')}.csv"
+        );
 
-        $all = IkosoftImport::repo()->listAll(1, -1, ['active' => true, 'trial_days' => $this->app->data['app']['Ikosoft']['trial_days']]);
-        $out = fopen('php://output', 'w');
-
-        foreach ($all['data'] as $fields) {
-            $fields['registered_at'] = $fields['registered_at']->format('d/m/Y à H:i:s');
-            fputcsv($out, $fields);
-        }
-
-        fclose($out);
+        $response->headers->set('Content-Disposition', $disposition);
+        $response->send();
     }
 }
