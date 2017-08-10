@@ -3,10 +3,8 @@
 namespace Jet\Modules\Ikosoft\Controllers;
 
 use Jet\Models\Media;
-use Jet\Models\Module;
 use Jet\Models\ModuleCategory;
 use Jet\Models\Status;
-use Jet\Modules\Post\Models\PostCategory;
 use JetFire\Db\Model;
 use JetFire\Framework\App;
 use JetFire\Framework\Providers\DbProvider;
@@ -149,15 +147,15 @@ class ImportController extends Controller
         if (is_file($file)) {
 
             $xml = $file;
-
-            $dir = ((substr($file, 0, 1) === '/') ? dirname($file) : ROOT . '/' . dirname($file)) . '/';
+            $dir = rtrim(dirname($file) , '/') . '/';
+            $dir = (substr($file, 0, 1) !== '/' && is_dir(ROOT . '/' . $dir)) ? ROOT . '/' . $dir : $dir;
             $instance = pathinfo($file);
 
             if(substr($file, -4) === ".zip") {
                 $response = $this->extractZip($file, $dir . $instance['filename']);
                 if ($response !== true) return $response;
                 $files = glob_recursive($dir . $instance['filename'] . '/' . '*.xini', GLOB_BRACE);
-                if(!isset($files[0])) ['status' => 'error', 'message' => 'Impossible de trouver le fichier d\'import : "' . $instance['filename'] . '.xini"'];
+                if(!isset($files[0])) return ['status' => 'error', 'message' => 'Impossible de trouver le fichier d\'import : "' . $dir . $instance['filename'] . '.xini"'];
                 $xml = $files[0];
             }
 
