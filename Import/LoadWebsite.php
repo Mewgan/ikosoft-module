@@ -62,8 +62,8 @@ class LoadWebsite extends LoadFixture
         }
 
         $this->loadAccountData($account);
-        $this->loadSocietyData($society);
         $this->loadAddressData($address);
+        $this->loadSocietyData($society);
         $this->loadWebsiteData($app, $data);
 
         if ($this->import->params['action'] == 'create') {
@@ -231,6 +231,31 @@ class LoadWebsite extends LoadFixture
     }
 
     /**
+     * @param array $address
+     */
+    private function loadAddressData($address = [])
+    {
+        $address['account_id'] = $this->import->data['account_id'];
+        if((string)$address['longitude'] == '0' && (string)$address['latitude'] == '0'){
+            $xy = geocode($address['address'] . ' ,' . $address['city'] . ' ' .  $address['postal_code'] . ' ' .  $address['country']);
+            $address['latitude'] = (isset($xy[0]) && !empty($xy[0])) ? $xy[0] : 0;
+            $address['longitude'] = (isset($xy[1]) && !empty($xy[1])) ? $xy[1] : 0;
+        }
+        $keys = array_keys($address);
+        if ($this->import->params['action'] == 'update' && isset($address['id'])) {
+            $sql = '';
+            foreach ($keys as $key) $sql .= '`' . $key . '` = :' . $key . ',';
+            $sql = rtrim($sql, ',');
+            $req = $this->import->pdo->prepare('UPDATE ' . $this->import->db['prefix'] . 'addresses SET ' . $sql . ' WHERE id = :id');
+        } else {
+            $req = $this->import->pdo->prepare('INSERT INTO ' . $this->import->db['prefix'] . 'addresses (' . implode(",", $keys) . ') VALUES (:' . implode(",:", $keys) . ')');
+        }
+        $req->execute($address);
+
+        $this->import->data['address_id'] = isset($address['id']) ? $address['id'] : $this->import->pdo->lastInsertId();
+    }
+
+    /**
      * @param array $society
      * @throws \Exception
      */
@@ -241,6 +266,7 @@ class LoadWebsite extends LoadFixture
 
         $date = new \DateTime();
         $society['account_id'] = $this->import->data['account_id'];
+        $society['address_id'] = $this->import->data['address_id'];
         $society['updated_at'] = $date->format('Y-m-d H:i:s');
         if ($this->import->params['action'] == 'create') {
             $society['created_at'] = $society['updated_at'];
@@ -258,29 +284,6 @@ class LoadWebsite extends LoadFixture
         $req->execute($society);
 
         $this->import->data['society_id'] = isset($society['id']) ? $society['id'] : $this->import->pdo->lastInsertId();
-    }
-
-    /**
-     * @param array $address
-     */
-    private function loadAddressData($address = [])
-    {
-        $address['society_id'] = $this->import->data['society_id'];
-        if((string)$address['longitude'] == '0' && (string)$address['latitude'] == '0'){
-            $xy = geocode($address['address'] . ' ,' . $address['city'] . ' ' .  $address['postal_code'] . ' ' .  $address['country']);
-            $address['latitude'] = (isset($xy[0]) && !empty($xy[0])) ? $xy[0] : 0;
-            $address['longitude'] = (isset($xy[1]) && !empty($xy[1])) ? $xy[1] : 0;
-        }
-        $keys = array_keys($address);
-        if ($this->import->params['action'] == 'update' && isset($address['id'])) {
-            $sql = '';
-            foreach ($keys as $key) $sql .= '`' . $key . '` = :' . $key . ',';
-            $sql = rtrim($sql, ',');
-            $req = $this->import->pdo->prepare('UPDATE ' . $this->import->db['prefix'] . 'addresses SET ' . $sql . ' WHERE id = :id');
-        } else {
-            $req = $this->import->pdo->prepare('INSERT INTO ' . $this->import->db['prefix'] . 'addresses (' . implode(",", $keys) . ') VALUES (:' . implode(",:", $keys) . ')');
-        }
-        $req->execute($address);
     }
 
     /**
